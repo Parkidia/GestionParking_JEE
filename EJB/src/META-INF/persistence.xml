@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <!-- Configuration de la persistence automatique des données. -->
+    <persistence-unit name="Parking" transaction-type="JTA">
+
+        <!-- Provider EclipseLink -->
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <!-- Nom JNDI vers la connexion à la base de données gérée par le serveur. -->
+        <jta-data-source>jdbc/parking</jta-data-source>
+
+        <properties>
+
+            <!-- Compatibilité avec PostgreSQL -->
+            <property name="eclipselink.target-database" value="PostgreSQL" />
+
+            <!-- Force la création des tables. -->
+            <property name="eclipselink.ddl-generation" value="create-tables" />
+
+            <!-- DEBUG: Affiche les requêtes SQL effectuées dans les logs du serveur. -->
+            <property name="eclipselink.logging.level" value="FINE" />
+        </properties>
+    </persistence-unit>
+</persistence>
