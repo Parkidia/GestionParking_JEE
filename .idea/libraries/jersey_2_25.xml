@@ -1,0 +1,24 @@
+<component name="libraryTable">
+  <library name="jersey-2.25">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/aopalliance-repackaged-2.5.0-b30.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/hk2-api-2.5.0-b30.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/hk2-locator-2.5.0-b30.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/hk2-utils-2.5.0-b30.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jackson-core-asl-1.9.13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jackson-jaxrs-1.9.13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jackson-mapper-asl-1.9.13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jackson-xc-1.9.13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/javassist-3.20.0-GA.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/javax.annotation-api-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/javax.inject-2.5.0-b30.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/javax.ws.rs-api-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-common-2.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-guava-2.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-media-json-jackson1-2.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/osgi-resource-locator-1.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

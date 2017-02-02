@@ -3,6 +3,8 @@
  */
 package com.parkidia.modeles;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
@@ -14,6 +16,7 @@ public abstract class AbstractEntity implements IEntity {
 
     /** La version de l'entité. */
     @Version
+    @JsonIgnore
     protected int version;
 
     /** Créé une nouvelle entité. */

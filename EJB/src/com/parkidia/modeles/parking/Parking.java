@@ -8,9 +8,14 @@ import com.parkidia.modeles.localisation.ILocalisation;
 import com.parkidia.modeles.localisation.Localisation;
 import com.parkidia.modeles.place.IPlace;
 import com.parkidia.modeles.place.Place;
+import com.parkidia.modeles.raspberry.IRaspberryPi;
+import com.parkidia.modeles.raspberry.RaspBerryPi;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Représente un parking géré par l'application.
@@ -34,20 +39,44 @@ public class Parking extends AbstractEntity implements IParking {
 
     /** Les places de ce parking. */
     @OneToMany(targetEntity = Place.class, mappedBy = "parking",
-            fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonManagedReference
     private List<IPlace> places;
+
+    /** La RaspBerry qui surveille ce parking. */
+    @OneToOne(targetEntity = RaspBerryPi.class, optional = false,
+            orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private IRaspberryPi raspberry;
 
     /** Créé un parking. */
     public Parking() {
+        places = new Vector<>();
     }
 
     /**
-     * Créé un nouveau parking avec son nom.
-     * @param nom le nom du parking.
+     * Créé un nouveau parking avec son identifiant.
+     * @param id l'identifiant du parking.
      */
-    public Parking(String nom) {
+    public Parking(int id) {
+        this();
+        this.id = id;
+    }
+
+    /**
+     * Créé un nouveau parking avec son nom, sa localisation et la RaspBerry Pi
+     * qui le filme.
+     * @param nom le nom du parking.
+     * @param localisation la localisation du parking.
+     * @param raspberry la RaspBerry Pi qui le filme.
+     */
+    public Parking(String nom, ILocalisation localisation,
+                   IRaspberryPi raspberry) {
+        this();
         this.nom = nom;
+        this.localisation = localisation;
+        this.raspberry = raspberry;
     }
 
     @Override
@@ -88,6 +117,16 @@ public class Parking extends AbstractEntity implements IParking {
     @Override
     public void setLocalisation(ILocalisation localisation) {
         this.localisation = localisation;
+    }
+
+    @Override
+    public IRaspberryPi getRaspberry() {
+        return raspberry;
+    }
+
+    @Override
+    public void setRaspberry(IRaspberryPi raspberry) {
+        this.raspberry = raspberry;
     }
 
     @Override

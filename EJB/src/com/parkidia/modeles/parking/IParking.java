@@ -6,6 +6,7 @@ package com.parkidia.modeles.parking;
 import com.parkidia.modeles.IEntity;
 import com.parkidia.modeles.localisation.ILocalisable;
 import com.parkidia.modeles.place.IPlace;
+import com.parkidia.modeles.raspberry.IRaspberryPi;
 
 import java.util.List;
 
@@ -47,6 +48,17 @@ public interface IParking extends IEntity, ILocalisable {
      * @param places les nouvelle places de ce parking.
      */
     void setPlaces(List<IPlace> places);
+
+    /**
+     * @return la RaspBerry qui surveille ce parking.
+     */
+    IRaspberryPi getRaspberry();
+
+    /**
+     * Modifie la RaspBerry qui surveille ce parking.
+     * @param raspberry la nouvelle RaspBerry qui surveille ce parking.
+     */
+    void setRaspberry(IRaspberryPi raspberry);
 
     /**
      * Ajoute une place à ce parking (tient en compte de la relation

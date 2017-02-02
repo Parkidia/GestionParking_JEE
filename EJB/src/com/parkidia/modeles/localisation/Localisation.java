@@ -4,6 +4,7 @@
 package com.parkidia.modeles.localisation;
 
 import com.parkidia.modeles.AbstractEntity;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -16,6 +17,7 @@ public class Localisation extends AbstractEntity implements ILocalisation {
     /** L'identifiant de la localisation en base de données. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private int id;
 
     /** La latitude de la localisation. */

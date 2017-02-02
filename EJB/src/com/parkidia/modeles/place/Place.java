@@ -8,6 +8,9 @@ import com.parkidia.modeles.localisation.ILocalisation;
 import com.parkidia.modeles.localisation.Localisation;
 import com.parkidia.modeles.parking.IParking;
 import com.parkidia.modeles.parking.Parking;
+import com.parkidia.modeles.place.statut.IStatut;
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 
 import javax.persistence.*;
 
@@ -23,21 +26,48 @@ public class Place extends AbstractEntity implements IPlace {
 
     /** L'orientationde la place par rapport à la photo du parking. */
     @Column(nullable = false)
-    private double orientation;
+    private int orientation;
 
     /** Si cette place est handicapée. */
     @Column(nullable = false)
     private boolean handicapee;
 
+    @Transient
+    @JsonManagedReference
+    private IStatut dernierStatut;
+
     /** Le parking où est située cette place. */
     @Id
     @ManyToOne(targetEntity = Parking.class, fetch = FetchType.EAGER,
-            cascade = CascadeType.REMOVE, optional = false)
+            cascade = CascadeType.ALL, optional = false)
+    @JsonBackReference
     private IParking parking;
 
     @OneToOne(targetEntity = Localisation.class, optional = false,
             orphanRemoval = true, cascade = CascadeType.ALL)
     private ILocalisation localisation;
+
+    /** Créé une nouvelle place. */
+    public Place() {
+    }
+
+    /**
+     * Créé une nouvelle place de parking.
+     * @param nom le nom de la place.
+     * @param orientation l'orientation de la place.
+     * @param handicapee si cette place est une place handicapée.
+     * @param parking le parking dans lequel cette place est présente.
+     * @param localisation la localisation de cette place.
+     */
+    public Place(String nom, int orientation, boolean handicapee,
+                 IParking parking,
+                 ILocalisation localisation) {
+        this.nom = nom;
+        this.orientation = orientation;
+        this.handicapee = handicapee;
+        this.parking = parking;
+        this.localisation = localisation;
+    }
 
     @Override
     public ILocalisation getLocalisation() {
@@ -60,13 +90,13 @@ public class Place extends AbstractEntity implements IPlace {
     }
 
     @Override
-    public double getOrientation() {
-        return 0;
+    public int getOrientation() {
+        return orientation;
     }
 
     @Override
-    public void setOrientation(double orientation) {
-
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 
     @Override
@@ -90,5 +120,15 @@ public class Place extends AbstractEntity implements IPlace {
         if (! parking.getPlaces().contains(this)) {
             parking.getPlaces().add(this);
         }
+    }
+
+    @Override
+    public IStatut getDernierStatut() {
+        return dernierStatut;
+    }
+
+    @Override
+    public void setDernierStatut(IStatut dernierStatut) {
+        this.dernierStatut = dernierStatut;
     }
 }

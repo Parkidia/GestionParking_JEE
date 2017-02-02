@@ -6,6 +6,7 @@ package com.parkidia.modeles.place;
 import com.parkidia.modeles.IEntity;
 import com.parkidia.modeles.localisation.ILocalisable;
 import com.parkidia.modeles.parking.IParking;
+import com.parkidia.modeles.place.statut.IStatut;
 
 /**
  * Représente une place de parking.
@@ -36,14 +37,14 @@ public interface IPlace extends IEntity, ILocalisable {
      * @return l'orientation de la place de parking par rapport à la photo du
      * parking.
      */
-    double getOrientation();
+    int getOrientation();
 
     /**
      * Modifie l'orientation de la place par rapport à la photo du
      * parking.
      * @param orientation la nouvelle orientation.
      */
-    void setOrientation(double orientation);
+    void setOrientation(int orientation);
 
     /**
      * @return le parking dans laquelle est présente cette place.
@@ -57,4 +58,8 @@ public interface IPlace extends IEntity, ILocalisable {
      * @param parking le parking ou cette place est présente maintenant.
      */
     void setParking(IParking parking);
+
+    IStatut getDernierStatut();
+
+    void setDernierStatut(IStatut statut);
 }

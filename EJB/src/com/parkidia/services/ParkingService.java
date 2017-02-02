@@ -4,8 +4,11 @@
 package com.parkidia.services;
 
 import com.parkidia.dao.DAOParking;
+import com.parkidia.dao.DAOPlace;
+import com.parkidia.dao.DAOStatut;
 import com.parkidia.modeles.parking.IParking;
 import com.parkidia.modeles.parking.Parking;
+import com.parkidia.modeles.place.IPlace;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,14 +25,21 @@ public class ParkingService {
      * dans la base de données.
      */
     @Inject
-    private DAOParking dao;
+    private DAOParking daoParking;
+
+    /**
+     * DAO permettant de récupèrer / insérer / modifier des éléments Statut
+     * dans la base de données.
+     */
+    @Inject
+    private DAOStatut daoStatut;
 
     /**
      * Créé un nouveau parking dans la base de données.
      * @param parking le parking a créer.
      */
     public void creerParking(IParking parking) {
-        dao.creer(parking);
+        daoParking.creer(parking);
     }
 
     /**
@@ -39,10 +49,15 @@ public class ParkingService {
      * argument, {@code null} si rien n'a été trouvé.
      */
     public IParking getParking(int id) {
-        IParking parking = new Parking();
-        parking.setId(id);
+        IParking parking = new Parking(id);
+        parking = daoParking.rechercher(parking);
 
-        return dao.rechercher(parking);
+        // On ajoute les dernier statut.
+        for (IPlace place : parking.getPlaces()) {
+            place.setDernierStatut(daoStatut.dernierStatut(place));
+        }
+
+        return daoParking.rechercher(parking);
     }
 
     /**
@@ -50,6 +65,6 @@ public class ParkingService {
      * @return la liste des parkings gérés.
      */
     public List<IParking> listeParkings() {
-        return dao.rechercherTous();
+        return daoParking.rechercherTous();
     }
 }

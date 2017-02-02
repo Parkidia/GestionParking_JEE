@@ -7,8 +7,6 @@ import com.parkidia.modeles.parking.IParking;
 import com.parkidia.modeles.parking.Parking;
 
 import javax.ejb.Singleton;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
@@ -16,10 +14,6 @@ import java.util.List;
  */
 @Singleton
 public class DAOParking extends AbstractDAO<IParking> {
-
-    /** L'objet gérant la persistance des données. */
-    @PersistenceContext(unitName = "Parking")
-    private EntityManager em;
 
     @Override
     public void creer(IParking entite) {
