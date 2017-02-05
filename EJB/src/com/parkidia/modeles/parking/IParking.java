@@ -6,7 +6,6 @@ package com.parkidia.modeles.parking;
 import com.parkidia.modeles.IEntity;
 import com.parkidia.modeles.localisation.ILocalisable;
 import com.parkidia.modeles.place.IPlace;
-import com.parkidia.modeles.raspberry.IRaspberryPi;
 
 import java.util.List;
 
@@ -50,15 +49,25 @@ public interface IParking extends IEntity, ILocalisable {
     void setPlaces(List<IPlace> places);
 
     /**
-     * @return la RaspBerry qui surveille ce parking.
+     * @return la clé de connexion à ce parking pour une RaspBerry Pi.
      */
-    IRaspberryPi getRaspberry();
+    String getCle();
 
     /**
-     * Modifie la RaspBerry qui surveille ce parking.
-     * @param raspberry la nouvelle RaspBerry qui surveille ce parking.
+     * Modifie la clé de connexion à ce parking pour une RaspBerry Pi.
+     * @param cle la nouvelle clé de connexion.
      */
-    void setRaspberry(IRaspberryPi raspberry);
+    void setCle(String cle);
+
+    /**
+     * @return le nombre de places que possède ce parking.
+     */
+    int getNbPlaces();
+
+    /**
+     * @return le nombre de places libres que le parking compte actuellement.
+     */
+    int getNbPlacesLibres();
 
     /**
      * Ajoute une place à ce parking (tient en compte de la relation
@@ -75,4 +84,10 @@ public interface IParking extends IEntity, ILocalisable {
      * @return True si la suppression a bien eu lieu, False sinon.
      */
     boolean supprimerPlace(IPlace place);
+
+    /**
+     * Calcule le nombre de places du parking ainsi que le nombre de places
+     * libres.
+     */
+    void calculerPlaces();
 }

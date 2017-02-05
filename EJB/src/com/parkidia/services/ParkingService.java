@@ -57,6 +57,9 @@ public class ParkingService {
             place.setDernierStatut(daoStatut.dernierStatut(place));
         }
 
+        // Calcule le nombre de places. places et les places libres.
+        parking.calculerPlaces();
+
         return daoParking.rechercher(parking);
     }
 
@@ -65,6 +68,19 @@ public class ParkingService {
      * @return la liste des parkings gérés.
      */
     public List<IParking> listeParkings() {
-        return daoParking.rechercherTous();
+        List<IParking> parkings = daoParking.rechercherTous();
+
+        for (IParking parking : parkings) {
+
+            // On ajoute les dernier statut.
+            for (IPlace place : parking.getPlaces()) {
+                place.setDernierStatut(daoStatut.dernierStatut(place));
+            }
+
+            // Calcule le nombre de places. places et les places libres.
+            parking.calculerPlaces();
+        }
+
+        return parkings;
     }
 }

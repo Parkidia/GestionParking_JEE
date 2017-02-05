@@ -8,13 +8,12 @@ import com.parkidia.modeles.localisation.ILocalisation;
 import com.parkidia.modeles.localisation.Localisation;
 import com.parkidia.modeles.place.IPlace;
 import com.parkidia.modeles.place.Place;
-import com.parkidia.modeles.raspberry.IRaspberryPi;
-import com.parkidia.modeles.raspberry.RaspBerryPi;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 import java.util.Vector;
 
 /**
@@ -39,16 +38,23 @@ public class Parking extends AbstractEntity implements IParking {
 
     /** Les places de ce parking. */
     @OneToMany(targetEntity = Place.class, mappedBy = "parking",
-            fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonManagedReference
     private List<IPlace> places;
 
-    /** La RaspBerry qui surveille ce parking. */
-    @OneToOne(targetEntity = RaspBerryPi.class, optional = false,
-            orphanRemoval = true, cascade = CascadeType.ALL)
+    /** La clé de connexion à ce parking pour une RaspBerry Pi. */
+    @Column(nullable = false)
     @JsonIgnore
-    private IRaspberryPi raspberry;
+    private String cle;
+
+    /** Le nombre de places que possède le parking. */
+    @Transient
+    private int nbPlaces;
+
+    /** Le nombre de places libres que possède le parking actuellement. */
+    @Transient
+    private int nbPlacesLibres;
 
     /** Créé un parking. */
     public Parking() {
@@ -69,14 +75,12 @@ public class Parking extends AbstractEntity implements IParking {
      * qui le filme.
      * @param nom le nom du parking.
      * @param localisation la localisation du parking.
-     * @param raspberry la RaspBerry Pi qui le filme.
      */
-    public Parking(String nom, ILocalisation localisation,
-                   IRaspberryPi raspberry) {
+    public Parking(String nom, ILocalisation localisation) {
         this();
         this.nom = nom;
         this.localisation = localisation;
-        this.raspberry = raspberry;
+        this.cle = UUID.randomUUID().toString();
     }
 
     @Override
@@ -120,13 +124,23 @@ public class Parking extends AbstractEntity implements IParking {
     }
 
     @Override
-    public IRaspberryPi getRaspberry() {
-        return raspberry;
+    public String getCle() {
+        return cle;
     }
 
     @Override
-    public void setRaspberry(IRaspberryPi raspberry) {
-        this.raspberry = raspberry;
+    public void setCle(String cle) {
+        this.cle = cle;
+    }
+
+    @Override
+    public int getNbPlaces() {
+        return nbPlaces;
+    }
+
+    @Override
+    public int getNbPlacesLibres() {
+        return nbPlacesLibres;
     }
 
     @Override
@@ -143,5 +157,18 @@ public class Parking extends AbstractEntity implements IParking {
             place.setParking(null);
         }
         return getPlaces().remove(place);
+    }
+
+    @Override
+    public void calculerPlaces() {
+        // Le nombre de places de parking.
+        this.nbPlaces = getPlaces().size();
+
+        // Les places libres.
+        for (IPlace place : getPlaces()) {
+            if (place.getDernierStatut().getDisponible()) {
+                nbPlacesLibres++;
+            }
+        }
     }
 }

@@ -6,6 +6,10 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="WebService" />
+          <element id="directory" name="lib">
+            <element id="library" level="project" name="jersey-2.25" />
+          </element>
+          <element id="artifact" artifact-name="EJB:ejb exploded" />
         </element>
       </element>
     </root>

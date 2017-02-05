@@ -3,12 +3,12 @@
  */
 package com.parkidia.webServices;
 
+import com.parkidia.application.WebServiceParkidia;
 import com.parkidia.modeles.localisation.Localisation;
 import com.parkidia.modeles.parking.IParking;
 import com.parkidia.modeles.parking.Parking;
 import com.parkidia.modeles.place.IPlace;
 import com.parkidia.modeles.place.Place;
-import com.parkidia.modeles.raspberry.RaspBerryPi;
 import com.parkidia.services.ParkingService;
 import com.parkidia.services.PlaceService;
 
@@ -57,8 +57,10 @@ public class ParkingWebService {
      * Retourne le parking dont l'identifiant est passé en argument au format
      * JSON.
      * @param id l'identifiant du parking.
-     * @return une réponse HTTP REST contenant les informations du parking, une
-     * erreur HTTP si le parking n'a pas été trouvé.
+     * @return une réponse HTTP : <ul>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT}
+     * : si le parking n'existe pas.</li> <li>200 et le parking au format JSON,
+     * s'il existe.</li> </ul>
      */
     @GET
     @Path("/{id}")
@@ -69,9 +71,11 @@ public class ParkingWebService {
 
         // S'il n'existe pas.
         if (parking == null) {
-            return Response.status(506).type(MediaType.TEXT_PLAIN_TYPE)
-                           .entity("Le parking avec l'identifiant \"" + id +
-                                   "\" n'existe pas.").build();
+            return Response
+                    .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity("Le parking avec l'identifiant \"" + id +
+                            "\" n'existe pas.").build();
         } else {
             return Response
                     .ok(parking, MediaType.APPLICATION_JSON_TYPE)
@@ -87,18 +91,14 @@ public class ParkingWebService {
      * @return le parking créé.
      */
     @POST
-    @Path("/{nom}/{latitude}/{longitude}/{nomRasp}/{hote}/{port}")
+    @Path("/{nom}/{latitude}/{longitude}")
     @Produces(MediaType.APPLICATION_JSON)
     public IParking creerParking(@PathParam("nom") String nom,
                                  @PathParam("latitude") double latitude,
-                                 @PathParam("longitude") double longitude,
-                                 @PathParam("nomRasp") String nomRasp,
-                                 @PathParam("hote") String hote,
-                                 @PathParam("port") int port) {
+                                 @PathParam("longitude") double longitude) {
         // Créé le parking.
         IParking parking =
-                new Parking(nom, new Localisation(latitude, longitude),
-                            new RaspBerryPi(nomRasp, hote, port));
+                new Parking(nom, new Localisation(latitude, longitude));
 
         // On le persiste.
         parkingService.creerParking(parking);
@@ -107,10 +107,30 @@ public class ParkingWebService {
         return parking;
     }
 
+    /**
+     * Ajoute une nouvelle place à un parking.
+     * @param idParking l'identifiant du parking où ajouter la place.
+     * @param cle le clé permettant de modifier des informations du parking.
+     * @param nom le nom de la place de parking.
+     * @param handicapee si la place est une place handicapée ou non.
+     * @param orientation l'orientation de la place sur la photo.
+     * @param latitude la latitude de la place.
+     * @param longitude la longitude de la place.
+     * @return Une réponse HTTP : <ul>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT}
+     * : Si le parking n'existe pas.</li>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_PLACE_EXISTANTE}
+     * : Si la place existe déjà dans ce parking.</li>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_CLE_INVALIDE}
+     * : Si la clé donnée n'est pas la bonne.</li> <li>200 avec le statut créé
+     * en JSON si l'ajout c'est bien passé.</li> </ul>
+     */
     @POST
-    @Path("/ajouterPlace/{idParking}/{nom}/{handicapee}/{orientation}/{latitude}/{longitude}")
+    @Path("/ajouterPlace/{idParking}/{cle}/{nom}/{handicapee}/{orientation" +
+          "}/{latitude}/{longitude}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response ajouterPlace(@PathParam("idParking") int idParking,
+                                 @PathParam("cle") String cle,
                                  @PathParam("nom") String nom,
                                  @PathParam("handicapee") boolean handicapee,
                                  @PathParam("orientation") int orientation,
@@ -121,10 +141,34 @@ public class ParkingWebService {
 
         // S'il n'existe pas.
         if (parking == null) {
-            return Response.status(506).type(MediaType.TEXT_PLAIN_TYPE)
-                           .entity("Le parking avec l'identifiant \"" +
-                                   idParking + "\" n'existe pas.").build();
+            return Response
+                    .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity("Le parking avec l'identifiant \"" +
+                            idParking + "\" n'existe pas.").build();
         } else {
+
+            // Bonne clé.
+            if (! cle.equals(parking.getCle())) {
+                return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
+                               .type(MediaType.TEXT_PLAIN_TYPE)
+                               .entity("Vous n'avez pas le droit " +
+                                       "d'enregistrer un" +
+                                       " statut pour cette place : clé " +
+                                       "incorrecte.")
+                               .build();
+            }
+
+            // Place existe.
+            for (IPlace place : parking.getPlaces()) {
+                if (place.getNom().equalsIgnoreCase(nom)) {
+                    return Response
+                            .status(WebServiceParkidia.HTTP_ERR_PLACE_EXISTANTE)
+                            .type(MediaType.TEXT_PLAIN_TYPE)
+                            .entity("Cette place existe déjà dans ce parking.")
+                            .build();
+                }
+            }
 
             // Créé la place.
             IPlace place = new Place(nom, orientation, handicapee, parking,

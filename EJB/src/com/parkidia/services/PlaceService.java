@@ -6,6 +6,7 @@ package com.parkidia.services;
 import com.parkidia.dao.DAOPlace;
 import com.parkidia.dao.DAOStatut;
 import com.parkidia.modeles.place.IPlace;
+import com.parkidia.modeles.place.statut.IStatut;
 import com.parkidia.modeles.place.statut.Statut;
 
 import javax.ejb.Stateless;
@@ -40,5 +41,13 @@ public class PlaceService {
 
         // On créé un statut de base.
         daoStatut.creer(new Statut(place, true, null));
+    }
+
+    /**
+     * Ajoute un nouveau statut à une place.
+     * @param statut le nouveau statut de la place.
+     */
+    public void ajouterStatut(IStatut statut) {
+        daoStatut.creer(statut);
     }
 }
