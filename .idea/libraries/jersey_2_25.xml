@@ -17,6 +17,12 @@
       <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-guava-2.25.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-media-json-jackson1-2.25.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/osgi-resource-locator-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/mimepull-1.9.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-media-multipart-2.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-server-2.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-client-2.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/jersey-media-jaxb-2.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebService/web/WEB-INF/lib/validation-api-1.1.0.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -38,8 +38,7 @@ public class Place extends AbstractEntity implements IPlace {
 
     /** Le parking où est située cette place. */
     @Id
-    @ManyToOne(targetEntity = Parking.class, fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(targetEntity = Parking.class, optional = false)
     @JsonBackReference
     private IParking parking;
 

@@ -18,8 +18,7 @@ public class Statut extends AbstractEntity implements IStatut {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(targetEntity = Place.class, fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL, optional = false)
+    @OneToOne(targetEntity = Place.class, optional = false)
     @JsonBackReference
     private IPlace place;
 

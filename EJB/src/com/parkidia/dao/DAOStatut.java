@@ -66,9 +66,9 @@ public class DAOStatut extends AbstractDAO<IStatut> {
      */
     public IStatut dernierStatut(IPlace place) {
         return em.createQuery(
-                "select s from Statut s where s.date = (select max(g.date) " +
-                "from Statut g) and s.place.nom = :nomPlace and s.place" +
-                ".parking.id = :idParking", IStatut.class)
+                "select s from Statut s where s.date = (select max(s.date) " +
+                "from Statut s where s.place.nom = :nomPlace and s.place" +
+                ".parking.id = :idParking)", IStatut.class)
                  .setParameter("nomPlace", place.getNom())
                  .setParameter("idParking", place.getParking().getId())
                  .getSingleResult();

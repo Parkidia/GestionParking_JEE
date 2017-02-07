@@ -40,7 +40,9 @@ public class PlaceService {
         daoPlace.creer(place);
 
         // On créé un statut de base.
-        daoStatut.creer(new Statut(place, true, null));
+        IStatut dernierStatut = new Statut(place, true, null);
+        place.setDernierStatut(dernierStatut);
+        daoStatut.creer(dernierStatut);
     }
 
     /**

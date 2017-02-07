@@ -52,6 +52,10 @@ public class ParkingService {
         IParking parking = new Parking(id);
         parking = daoParking.rechercher(parking);
 
+        if (parking == null) {
+            return null;
+        }
+
         // On ajoute les dernier statut.
         for (IPlace place : parking.getPlaces()) {
             place.setDernierStatut(daoStatut.dernierStatut(place));
