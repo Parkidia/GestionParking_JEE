@@ -3,79 +3,90 @@
  */
 package com.parkidia.modeles.place;
 
-import com.parkidia.modeles.AbstractEntity;
-import com.parkidia.modeles.localisation.ILocalisation;
 import com.parkidia.modeles.localisation.Localisation;
 import com.parkidia.modeles.parking.IParking;
 import com.parkidia.modeles.parking.Parking;
 import com.parkidia.modeles.place.statut.IStatut;
+import com.parkidia.modeles.place.statut.Statut;
 import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Vector;
 
-/**
- * Représente une place de d'un parking.
- */
 @Entity
-public class Place extends AbstractEntity implements IPlace {
+@IdClass(PlaceId.class)
+public class Place extends Localisation implements IPlace {
 
     /** Le nom de la place. */
     @Id
     private String nom;
 
-    /** L'orientationde la place par rapport à la photo du parking. */
-    @Column(nullable = false)
-    private int orientation;
+    /** Le parking sur lequel cette place est présente. */
+    @Id
+    @ManyToOne
+    @JsonBackReference
+    private Parking parking;
 
     /** Si cette place est handicapée. */
     @Column(nullable = false)
     private boolean handicapee;
 
-    @Transient
+    /** L'orientation de la place sur la parking. */
+    @Column(nullable = false)
+    private int orientation;
+
+    /** Les différents statuts de cette place. */
+    @OneToMany(targetEntity = Statut.class, mappedBy = "place",
+            fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            orphanRemoval = true)
     @JsonManagedReference
+    @JsonIgnore
+    private List<IStatut> statuts;
+
+    /** Le dernier statut de cette place. */
+    @Transient
     private IStatut dernierStatut;
 
-    /** Le parking où est située cette place. */
-    @Id
-    @ManyToOne(targetEntity = Parking.class, optional = false)
-    @JsonBackReference
-    private IParking parking;
-
-    @OneToOne(targetEntity = Localisation.class, optional = false,
-            orphanRemoval = true, cascade = CascadeType.ALL)
-    private ILocalisation localisation;
-
-    /** Créé une nouvelle place. */
+    /** Créé une nouvelle place de parking. */
     public Place() {
+        this.statuts = new Vector<>();
     }
 
     /**
      * Créé une nouvelle place de parking.
-     * @param nom le nom de la place.
-     * @param orientation l'orientation de la place.
-     * @param handicapee si cette place est une place handicapée.
      * @param parking le parking dans lequel cette place est présente.
-     * @param localisation la localisation de cette place.
+     * @param handicapee si cette place est une place handicapée.
+     * @param latitude la latitude de la place.
+     * @param longitude la longitude de la place.
+     * @param orientation l'orientation de la place.
      */
-    public Place(String nom, int orientation, boolean handicapee,
-                 IParking parking,
-                 ILocalisation localisation) {
+    public Place(String nom, IParking parking, boolean handicapee,
+                 double latitude, double longitude, int orientation) {
+        super(latitude, longitude);
         this.nom = nom;
-        this.orientation = orientation;
         this.handicapee = handicapee;
-        this.parking = parking;
-        this.localisation = localisation;
+        this.orientation = orientation;
+        this.setParking((Parking) parking);
+        this.statuts = new Vector<>();
     }
 
     @Override
-    public ILocalisation getLocalisation() {
-        return localisation;
+    public boolean ajouterStatut(IStatut statut) {
+        if (! statut.getPlace().equals(this)) {
+            statut.setPlace(this);
+        }
+        this.calculerDernierStatut();
+        return getStatuts().add(statut);
     }
 
+    @PostLoad
     @Override
-    public void setLocalisation(ILocalisation localisation) {
-        this.localisation = localisation;
+    public void calculerDernierStatut() {
+        this.dernierStatut = getStatuts().isEmpty() ? null : getStatuts()
+                .get(getStatuts().size() - 1);
     }
 
     @Override
@@ -89,13 +100,31 @@ public class Place extends AbstractEntity implements IPlace {
     }
 
     @Override
-    public int getOrientation() {
-        return orientation;
+    public Parking getParking() {
+        return parking;
     }
 
     @Override
-    public void setOrientation(int orientation) {
-        this.orientation = orientation;
+    public void setParking(IParking parking) {
+        if (! parking.getPlaces().contains(this)) {
+            parking.getPlaces().add(this);
+        }
+        this.parking = (Parking) parking;
+    }
+
+    @Override
+    public List<IStatut> getStatuts() {
+        return statuts;
+    }
+
+    @Override
+    public void setStatuts(List<IStatut> statuts) {
+        this.statuts = statuts;
+    }
+
+    @Override
+    public IStatut getDernierStatut() {
+        return dernierStatut;
     }
 
     @Override
@@ -109,25 +138,12 @@ public class Place extends AbstractEntity implements IPlace {
     }
 
     @Override
-    public IParking getParking() {
-        return parking;
+    public int getOrientation() {
+        return orientation;
     }
 
     @Override
-    public void setParking(IParking parking) {
-        this.parking = parking;
-        if (! parking.getPlaces().contains(this)) {
-            parking.getPlaces().add(this);
-        }
-    }
-
-    @Override
-    public IStatut getDernierStatut() {
-        return dernierStatut;
-    }
-
-    @Override
-    public void setDernierStatut(IStatut dernierStatut) {
-        this.dernierStatut = dernierStatut;
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 }

@@ -6,41 +6,29 @@ package com.parkidia.modeles.localisation;
 import com.parkidia.modeles.IEntity;
 
 /**
- * Représente la localisation d'un objet sur Terre par sa longitude et sa
- * latitude.o
+ * Définis la localisation d'un parking par sa latitude et longitude.
  */
 public interface ILocalisation extends IEntity {
 
     /**
-     * @return l'identifiant de cette localisation dans la base de données.
-     */
-    int getId();
-
-    /**
-     * Modifie l'identifiant de cette localisation dans la base de données.
-     * @param id le nouvel identifiant.
-     */
-    void setId(int id);
-
-    /**
-     * @return la latitude de cette localisation.
+     * @return la latitude de ce parking.
      */
     double getLatitude();
 
     /**
-     * Modifie la latitude de cette localisation.
-     * @param latitude la nouvelle latitude de cette localisation.
+     * Modifie la latitude de ce parking.
+     * @param latitude la nouvelle latitude de ce parking.
      */
     void setLatitude(double latitude);
 
     /**
-     * @return la latitude de cette localisation.
+     * @return la latitude de ce parking.
      */
     double getLongitude();
 
     /**
-     * Modifie la longitude de cette localisation.
-     * @param longitude la nouvelle longitude de cette localisation.
+     * Modifie la longitude de ce parking.
+     * @param longitude la nouvelle longitude de ce parking.
      */
     void setLongitude(double longitude);
 }

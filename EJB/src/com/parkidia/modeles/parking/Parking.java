@@ -3,8 +3,6 @@
  */
 package com.parkidia.modeles.parking;
 
-import com.parkidia.modeles.AbstractEntity;
-import com.parkidia.modeles.localisation.ILocalisation;
 import com.parkidia.modeles.localisation.Localisation;
 import com.parkidia.modeles.place.IPlace;
 import com.parkidia.modeles.place.Place;
@@ -17,12 +15,12 @@ import java.util.UUID;
 import java.util.Vector;
 
 /**
- * Représente un parking géré par l'application.
+ * Représente un parking composées de places.
  */
 @Entity
-public class Parking extends AbstractEntity implements IParking {
+public class Parking extends Localisation implements IParking {
 
-    /** L'identifiant du parking dans la base de données. */
+    /** L'identifiant du parking. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -31,56 +29,75 @@ public class Parking extends AbstractEntity implements IParking {
     @Column(nullable = false)
     private String nom;
 
-    /** Les coordonnées GPS su parking. */
-    @OneToOne(targetEntity = Localisation.class, optional = false,
-            orphanRemoval = true, cascade = CascadeType.ALL)
-    private ILocalisation localisation;
+    /** La clé permettant de modifier le parking. */
+    @Column(nullable = false, unique = true)
+    @JsonIgnore
+    private String cle;
 
-    /** Les places de ce parking. */
+    /** Les places du parking. */
     @OneToMany(targetEntity = Place.class, mappedBy = "parking",
             fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonManagedReference
     private List<IPlace> places;
 
-    /** La clé de connexion à ce parking pour une RaspBerry Pi. */
-    @Column(nullable = false)
-    @JsonIgnore
-    private String cle;
-
-    /** Le nombre de places que possède le parking. */
+    /** Le nombre de places du parking. */
     @Transient
     private int nbPlaces;
 
-    /** Le nombre de places libres que possède le parking actuellement. */
+    /** Le nombre de places libres actuellement dans le parking. */
     @Transient
     private int nbPlacesLibres;
 
-    /** Créé un parking. */
+    /** Créé un nouveau parking. */
     public Parking() {
-        places = new Vector<>();
-    }
-
-    /**
-     * Créé un nouveau parking avec son identifiant.
-     * @param id l'identifiant du parking.
-     */
-    public Parking(int id) {
-        this();
-        this.id = id;
-    }
-
-    /**
-     * Créé un nouveau parking avec son nom, sa localisation et la RaspBerry Pi
-     * qui le filme.
-     * @param nom le nom du parking.
-     * @param localisation la localisation du parking.
-     */
-    public Parking(String nom, ILocalisation localisation) {
-        this();
-        this.nom = nom;
-        this.localisation = localisation;
+        this.places = new Vector<>();
         this.cle = UUID.randomUUID().toString();
+        this.nbPlaces = this.nbPlacesLibres = 0;
+    }
+
+    /**
+     * Créé un nouveau parking.
+     * @param nom le nom du parking.
+     * @param latitude la latitude du parking.
+     * @param longitude la longitude du parking.
+     */
+    public Parking(String nom, double latitude, double longitude) {
+        super(latitude, longitude);
+        this.nom = nom;
+        this.places = new Vector<>();
+        this.cle = UUID.randomUUID().toString();
+        this.nbPlaces = this.nbPlacesLibres = 0;
+    }
+
+    @Override
+    public boolean ajouterPlace(IPlace place) {
+        if (! place.getParking().equals(this)) {
+            place.setParking(this);
+        }
+        boolean ajout = getPlaces().add(place);
+        return ajout;
+    }
+
+    @Override
+    public boolean supprimerPlace(IPlace place) {
+        if (place.getParking().equals(this)) {
+            place.setParking(null);
+        }
+        boolean suppression = getPlaces().remove(place);
+        return suppression;
+    }
+
+    @Override
+    public void calculerPlaces() {
+        this.nbPlaces = getPlaces().size();
+        this.nbPlacesLibres = 0;
+
+        for (IPlace place : getPlaces()) {
+            if (place.getDernierStatut().getDisponible()) {
+                this.nbPlacesLibres++;
+            }
+        }
     }
 
     @Override
@@ -104,26 +121,6 @@ public class Parking extends AbstractEntity implements IParking {
     }
 
     @Override
-    public List<IPlace> getPlaces() {
-        return places;
-    }
-
-    @Override
-    public void setPlaces(List<IPlace> places) {
-        this.places = places;
-    }
-
-    @Override
-    public ILocalisation getLocalisation() {
-        return localisation;
-    }
-
-    @Override
-    public void setLocalisation(ILocalisation localisation) {
-        this.localisation = localisation;
-    }
-
-    @Override
     public String getCle() {
         return cle;
     }
@@ -134,6 +131,16 @@ public class Parking extends AbstractEntity implements IParking {
     }
 
     @Override
+    public List<IPlace> getPlaces() {
+        return places;
+    }
+
+    @Override
+    public void setPlaces(List<IPlace> places) {
+        this.places = places;
+    }
+
+    @Override
     public int getNbPlaces() {
         return nbPlaces;
     }
@@ -141,34 +148,5 @@ public class Parking extends AbstractEntity implements IParking {
     @Override
     public int getNbPlacesLibres() {
         return nbPlacesLibres;
-    }
-
-    @Override
-    public boolean ajouterPlace(IPlace place) {
-        if (! place.getParking().equals(this)) {
-            place.setParking(this);
-        }
-        return getPlaces().add(place);
-    }
-
-    @Override
-    public boolean supprimerPlace(IPlace place) {
-        if (place.getParking().equals(this)) {
-            place.setParking(null);
-        }
-        return getPlaces().remove(place);
-    }
-
-    @Override
-    public void calculerPlaces() {
-        // Le nombre de places de parking.
-        this.nbPlaces = getPlaces().size();
-
-        // Les places libres.
-        for (IPlace place : getPlaces()) {
-            if (place.getDernierStatut().getDisponible()) {
-                nbPlacesLibres++;
-            }
-        }
     }
 }

@@ -3,91 +3,88 @@
  */
 package com.parkidia.modeles.parking;
 
-import com.parkidia.modeles.IEntity;
-import com.parkidia.modeles.localisation.ILocalisable;
+import com.parkidia.modeles.localisation.ILocalisation;
 import com.parkidia.modeles.place.IPlace;
 
 import java.util.List;
 
 /**
- * Représente un parking.
+ * Définis un parking composées de places.
  */
-public interface IParking extends IEntity, ILocalisable {
+public interface IParking extends ILocalisation {
 
     /**
-     * @return l'identifiant de ce parking dans la base de données.
+     * Ajoute une place à ce parking (prend en compte la realtion
+     * bidirectionnelle {@code Parking <--> Place}.
+     * @param place la place à ajouter à ce parking.
+     * @return True si l'ajout a bien été exécuté, False sinon.
+     */
+    boolean ajouterPlace(IPlace place);
+
+    /**
+     * Supprime une place à ce parking (prend en compte la realtion
+     * bidirectionnelle {@code Parking <--> Place}.
+     * @param place la place à supprimer à ce parking.
+     * @return True si la suppression a bien été exécuté, False sinon.
+     */
+    boolean supprimerPlace(IPlace place);
+
+    /**
+     * Calcule et met à jour le nombre de places et le nombre de places libres.
+     */
+    void calculerPlaces();
+
+    /**
+     * @return l'identifiant du parking.
      */
     int getId();
 
     /**
-     * Modifie l'identifiant de ce parking dans la base de données.
-     * @param id le nouvel identifiant.
+     * Modifie l'identifiant du parking.
+     * @param id le nouvel identifiant du parking.
      */
     void setId(int id);
 
     /**
-     * @return le nom de ce parking.
+     * @return le nom du parking.
      */
     String getNom();
 
     /**
-     * Modifie le nom de ce parking.
+     * Modifie le nom du parking.
      * @param nom le nouveau nom du parking.
      */
     void setNom(String nom);
 
     /**
-     * Retourne les places du parking.
-     * @return les places de ce parking.
-     */
-    List<IPlace> getPlaces();
-
-    /**
-     * Modifie les places de ce parking.
-     * @param places les nouvelle places de ce parking.
-     */
-    void setPlaces(List<IPlace> places);
-
-    /**
-     * @return la clé de connexion à ce parking pour une RaspBerry Pi.
+     * @return la clé pour pouvoir modifier le parking.
      */
     String getCle();
 
     /**
-     * Modifie la clé de connexion à ce parking pour une RaspBerry Pi.
-     * @param cle la nouvelle clé de connexion.
+     * Modifie la clé pour pouvoir modifier le parking.
+     * @param cle la nouvelle clé pour pouvoir modifier le parking.
      */
     void setCle(String cle);
 
     /**
-     * @return le nombre de places que possède ce parking.
+     * @return les places du parking.
+     */
+    List<IPlace> getPlaces();
+
+    /**
+     * Modifie les places du parking.
+     * @param places les nouvelles places du parking.
+     */
+    void setPlaces(List<IPlace> places);
+
+    /**
+     * @return le nombre de places que possède le parking.
      */
     int getNbPlaces();
 
     /**
-     * @return le nombre de places libres que le parking compte actuellement.
+     * @return le nombre de places libres que possède le parking actuellement.
      */
     int getNbPlacesLibres();
-
-    /**
-     * Ajoute une place à ce parking (tient en compte de la relation
-     * bidirectionnelle => {@code Parking <--> Place}, c'est-à-dire ajoute ce
-     * parking comme le parking de la place).
-     * @param place la place à ajouter à ce parking.
-     * @return True si l'ajout a bien eu lieu, False sinon.
-     */
-    boolean ajouterPlace(IPlace place);
-
-    /**
-     * Supprime une place à ce parking.
-     * @param place la place à supprimer à ce parking.
-     * @return True si la suppression a bien eu lieu, False sinon.
-     */
-    boolean supprimerPlace(IPlace place);
-
-    /**
-     * Calcule le nombre de places du parking ainsi que le nombre de places
-     * libres.
-     */
-    void calculerPlaces();
 }

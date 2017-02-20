@@ -15,27 +15,19 @@ import java.util.List;
 @Singleton
 public class DAOParking extends AbstractDAO<IParking> {
 
-    @Override
-    public void creer(IParking entite) {
-        em.persist(entite);
+    /**
+     * Recherche un parking dont l'identifiant est passé en argument.
+     * @param id l'identifiant du parking.
+     * @return le parking trouvé.
+     */
+    public IParking rechercher(int id) {
+        return em.find(Parking.class, id);
     }
 
-    @Override
-    public IParking maj(IParking entite) {
-        return em.merge(entite);
-    }
-
-    @Override
-    public void supprimer(IParking entite) {
-        em.detach(entite);
-    }
-
-    @Override
-    public IParking rechercher(IParking entite) {
-        return em.find(Parking.class, entite.getId());
-    }
-
-    @Override
+    /**
+     * Recherche tous les parkings gérés.
+     * @return la liste des parkings.
+     */
     public List<IParking> rechercherTous() {
         return em.createQuery("select p from Parking p", IParking.class)
                  .getResultList();

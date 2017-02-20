@@ -4,10 +4,8 @@
 package com.parkidia.services;
 
 import com.parkidia.dao.DAOPlace;
-import com.parkidia.dao.DAOStatut;
 import com.parkidia.modeles.place.IPlace;
-import com.parkidia.modeles.place.statut.IStatut;
-import com.parkidia.modeles.place.statut.Statut;
+import com.parkidia.modeles.place.IPlaceId;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,37 +17,44 @@ import javax.inject.Inject;
 public class PlaceService {
 
     /**
-     * DAO permettant de récupèrer / insérer / modifier des éléments Place
+     * DAO permettant de récupèrer / insérer / modifier des place de parking
      * dans la base de données.
      */
     @Inject
     private DAOPlace daoPlace;
 
     /**
-     * DAO permettant de récupèrer / insérer / modifier des éléments Statut
-     * dans la base de données.
-     */
-    @Inject
-    private DAOStatut daoStatut;
-
-    /**
-     * Créé une nouvelle place de parking dans la base de données.
-     * @param place la place de parking a créer.
+     * Créé une nouvelle place dans la base de données.
+     * @param place la place a créer.
      */
     public void creerPlace(IPlace place) {
         daoPlace.creer(place);
-
-        // On créé un statut de base.
-        IStatut dernierStatut = new Statut(place, true, null);
-        place.setDernierStatut(dernierStatut);
-        daoStatut.creer(dernierStatut);
     }
 
     /**
-     * Ajoute un nouveau statut à une place.
-     * @param statut le nouveau statut de la place.
+     * Met à jour dans la base de données la place passé en argument.
+     * @param place la place à mettre à jour.
+     * @return la place mise à jour.
      */
-    public void ajouterStatut(IStatut statut) {
-        daoStatut.creer(statut);
+    public IPlace majPlace(IPlace place) {
+        return daoPlace.maj(place);
+    }
+
+    /**
+     * Supprime la place passé en argument de la base de données.
+     * @param place la place à supprimer.
+     */
+    public void supprimerPlace(IPlace place) {
+        daoPlace.supprimer(place);
+    }
+
+    /**
+     * Retourne la place avec l'identifiant passé en argument.
+     * @param id l'identifiant de la place.
+     * @return la place dont l'identifiant correspond à celui passé en
+     * argument, {@code null} si rien n'a été trouvé.
+     */
+    public IPlace getPlace(IPlaceId id) {
+        return daoPlace.rechercher(id);
     }
 }

@@ -1,13 +1,13 @@
 /*
- * DAOPlace.java
+ * DAOTache.java
  */
 package com.parkidia.dao;
 
 import com.parkidia.modeles.place.IPlace;
+import com.parkidia.modeles.place.IPlaceId;
+import com.parkidia.modeles.place.Place;
 
 import javax.ejb.Singleton;
-import javax.persistence.TypedQuery;
-import java.util.List;
 
 /**
  * DAO permettant de gérer les places de parking dans la base de données.
@@ -15,35 +15,13 @@ import java.util.List;
 @Singleton
 public class DAOPlace extends AbstractDAO<IPlace> {
 
-    @Override
-    public void creer(IPlace entite) {
-        em.persist(entite);
-    }
-
-    @Override
-    public IPlace maj(IPlace entite) {
-        return em.merge(entite);
-    }
-
-    @Override
-    public void supprimer(IPlace entite) {
-        em.detach(entite);
-    }
-
-    @Override
-    public IPlace rechercher(IPlace entite) {
-        TypedQuery<IPlace> query = em.createQuery(
-                "select pl from Place pl where pl.nom = :nom " +
-                "and pl.parking.id = :id", IPlace.class)
-                                     .setParameter("nom", entite.getNom())
-                                     .setParameter("id",
-                                                   entite.getParking().getId());
-        return query.getSingleResult();
-    }
-
-    @Override
-    public List<IPlace> rechercherTous() {
-        return em.createQuery("select p from Place p", IPlace.class)
-                 .getResultList();
+    /**
+     * Recherche une place dont l'identifiant est passé en argument.
+     * @param id l'identifiant de la place.
+     * @return la place trouvée ou <code>null</code> si aucune place n'a été
+     * trouvée.
+     */
+    public IPlace rechercher(IPlaceId id) {
+        return em.find(Place.class, id);
     }
 }

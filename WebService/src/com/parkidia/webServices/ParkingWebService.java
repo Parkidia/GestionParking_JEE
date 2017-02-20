@@ -4,11 +4,10 @@
 package com.parkidia.webServices;
 
 import com.parkidia.application.WebServiceParkidia;
-import com.parkidia.modeles.localisation.Localisation;
+import com.parkidia.dto.ParkingDTO;
 import com.parkidia.modeles.parking.IParking;
 import com.parkidia.modeles.parking.Parking;
 import com.parkidia.services.ParkingService;
-import com.parkidia.services.PlaceService;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -18,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Représente le web service permettant de gérer les parkings.
@@ -32,32 +32,26 @@ public class ParkingWebService {
     private ParkingService parkingService;
 
     /**
-     * Le service permettant d'accéder aux places de parking.
-     */
-    @EJB
-    private PlaceService placeService;
-
-    /**
      * @return la liste de tous les parkings sous la forme d'un tableau en JSON.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IParking> getTousParking() {
-        // La liste des parkings.
+    public List<ParkingDTO> getTousParking() {
         List<IParking> parkings = parkingService.listeParkings();
+        List<ParkingDTO> parkingDTOS = new Vector<>();
 
-        // On enlève les places.
         for (IParking parking : parkings) {
-            parking.setPlaces(null);
+            parking.calculerPlaces();
+            parkingDTOS.add(new ParkingDTO(parking));
         }
 
-        return parkings;
+        return parkingDTOS;
     }
 
     /**
      * Retourne le parking dont l'identifiant est passé en argument au format
      * JSON.
-     * @param id l'identifiant du parking.
+     * @param id l' identifiant du parking.
      * @return une réponse HTTP : <ul>
      *     <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT}
      * : si le parking n'existe pas.</li> <li>200 et le parking au format JSON,
@@ -78,6 +72,7 @@ public class ParkingWebService {
                     .entity("Le parking avec l'identifiant \"" + id +
                             "\" n'existe pas.").build();
         } else {
+            parking.calculerPlaces();
             return Response
                     .ok(parking, MediaType.APPLICATION_JSON_TYPE)
                     .build();
@@ -98,8 +93,7 @@ public class ParkingWebService {
                                  @PathParam("latitude") double latitude,
                                  @PathParam("longitude") double longitude) {
         // Créé le parking.
-        IParking parking =
-                new Parking(nom, new Localisation(latitude, longitude));
+        IParking parking = new Parking(nom, latitude, longitude);
 
         // On le persiste.
         parkingService.creerParking(parking);
@@ -108,8 +102,106 @@ public class ParkingWebService {
         return parking;
     }
 
+    /**
+     * Modifie la latitude, la longitude et le nom d'un parking dont
+     * l'identifiant est passé en argument.
+     * @param id l'identifiant du parking à modifier.
+     * @param nom le nouveau nom du parking.
+     * @param cle la clé du parking pour pouvoir le modifier.
+     * @param latitude la nouvelle latitude du parking.
+     * @param longitude la nouvelle longitude du parking.
+     * @return une réponse HTTP : <ul>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT}
+     * : si le parking n'existe pas.</li> <li>200 et le parking modifié au
+     * format JSON, s'il existe.</li>
+     * <li>{@link WebServiceParkidia#HTTP_ERR_CLE_INVALIDE}
+     * : Si la clé donnée n'est pas la bonne.</li></ul>
+     */
+    @PUT
+    @Path("/{id}/{cle}/{nom}/{latitude}/{longitude}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response majParking(@PathParam("id") int id,
+                               @PathParam("nom") String nom,
+                               @PathParam("cle") String cle,
+                               @PathParam("latitude") double latitude,
+                               @PathParam("longitude") double longitude) {
+        // Récupère le parking.
+        IParking parking = parkingService.getParking(id);
+
+        // S'il n'existe pas.
+        if (parking == null) {
+            return Response
+                    .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity("Le parking avec l'identifiant \"" + id +
+                            "\" n'existe pas.").build();
+        } else if (! cle.equals(parking.getCle())) {
+            return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
+                           .type(MediaType.TEXT_PLAIN_TYPE)
+                           .entity("Vous n'avez pas le droit " +
+                                   "de créer une" +
+                                   " place pour ce parking : clé " +
+                                   "incorrecte.")
+                           .build();
+        }
+
+        parking.setLatitude(latitude);
+        parking.setLongitude(longitude);
+        parking.setNom(nom);
+        parking.calculerPlaces();
+        parking = parkingService.majParking(parking);
+
+        return Response.ok(parking).build();
+    }
+
+    /**
+     * Supprime le parking dont l'identifiant est passé en argument.
+     * @param id l'identifiant du parking à supprimer.
+     * @param cle la clé du parking pour pouvoir le modifier.
+     * @return une réponse HTTP : <ul>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT}
+     * : si le parking n'existe pas.</li> <li>200 si le parking a bien été
+     * supprimé.</li> <li>{@link WebServiceParkidia#HTTP_ERR_CLE_INVALIDE} : Si
+     * la clé donnée n'est pas la bonne.</li></ul>
+     */
+    @DELETE
+    @Path("/{id}/{cle}")
+    public Response supprimerParking(@PathParam("id") int id,
+                                     @PathParam("cle") String cle) {
+        // Récupère le parking.
+        IParking parking = parkingService.getParking(id);
+
+        // S'il n'existe pas.
+        if (parking == null) {
+            return Response
+                    .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity("Le parking avec l'identifiant \"" + id +
+                            "\" n'existe pas.").build();
+        } else if (! cle.equals(parking.getCle())) {
+            return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
+                           .type(MediaType.TEXT_PLAIN_TYPE)
+                           .entity("Vous n'avez pas le droit " +
+                                   "de créer une" +
+                                   " place pour ce parking : clé " +
+                                   "incorrecte.")
+                           .build();
+        }
+
+        parkingService.supprimerParking(parking);
+        return Response.ok().build();
+    }
+
+    /**
+     * Retourne l'image d'overlay d'un parking.
+     * @param idParking l'identifiant du parking.
+     * @return une réponse HTTP: <ul>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_CHARGEMENT_IMAGE}:
+     * si l'image n'existe pas.</li> <li>200 avec l'image si tout c'est bien
+     * passé.</li> </ul>
+     */
     @GET
-    @Path("/image/{idParking}")
+    @Path("/overlay/{idParking}")
     @Produces("image/jpg")
     public Response getImageParking(@PathParam("idParking") int idParking) {
         // Récupère le parking.
@@ -126,7 +218,8 @@ public class ParkingWebService {
 
             // Le chemin de l'image.
             String chemin =
-                    WebServiceParkidia.DOSSIER_IMAGE + idParking + ".jpg";
+                    WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + idParking +
+                    ".jpg";
             File fichier = new File(chemin);
 
             if (fichier.exists()) {
@@ -140,7 +233,7 @@ public class ParkingWebService {
     }
 
     /**
-     * Charge une image sur le serveur correspondant à un parking.
+     * Charge une image d'overlay sur le serveur correspondant à un parking.
      * @param idParking l'identifiant du parking dont l'image représente.
      * @param cle le clé permettant de modifier des informations du parking.
      * @param in le flux permettant de lire l'image.
@@ -155,13 +248,13 @@ public class ParkingWebService {
      * été réalisé avec succès.</li> </ul>
      */
     @POST
-    @Path("/image/{idParking}/{cle}")
+    @Path("/overlay/{idParking}/{cle}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response ajouterImage(@PathParam("cle") String cle,
-                                 @PathParam("idParking") int idParking,
-                                 @FormDataParam("image") InputStream in,
-                                 @FormDataParam("image")
-                                         FormDataContentDisposition desc) {
+    public Response ajouterOverlay(@PathParam("idParking") int idParking,
+                                   @PathParam("cle") String cle,
+                                   @FormDataParam("overlay") InputStream in,
+                                   @FormDataParam("overlay")
+                                           FormDataContentDisposition desc) {
 
         // Récupère le parking.
         IParking parking = parkingService.getParking(idParking);
@@ -188,7 +281,8 @@ public class ParkingWebService {
 
             // Le chemin où le fichier sera upload.
             String cheminUpload =
-                    WebServiceParkidia.DOSSIER_IMAGE + idParking + ".jpg";
+                    WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + idParking +
+                    ".jpg";
 
             // Enregistre l'image.
             try {
@@ -215,7 +309,7 @@ public class ParkingWebService {
         OutputStream out = new FileOutputStream(new File(chemin));
 
         // Nombre d'octets lus.
-        int read = 0;
+        int read;
 
         // Tableau où seront stockés les octets lus.
         byte[] bytes = new byte[1024];

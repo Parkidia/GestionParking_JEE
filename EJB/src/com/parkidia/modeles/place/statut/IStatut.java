@@ -9,29 +9,18 @@ import com.parkidia.modeles.place.IPlace;
 import java.util.Calendar;
 
 /**
- * Classe représentant le statut d'une place de parking à un instant T.
+ * Définis le statut d'une place.
  */
 public interface IStatut extends IEntity {
 
     /**
-     * @return l'identifiant du statut.
-     */
-    int getId();
-
-    /**
-     * Modifie l'identifiant du statut dans la base de données.
-     * @param id le nouvelle identifiant du statut.
-     */
-    void setId(int id);
-
-    /**
-     * @return la place sur laquelle le statut porte.
+     * @return la place dont ce statut porte sur.
      */
     IPlace getPlace();
 
     /**
-     * Modifie la place sur laquelle le statut porte.
-     * @param place le nouvelle place.
+     * Modifie la place de ce statut.
+     * @param place le nouvelle place de ce statut.
      */
     void setPlace(IPlace place);
 
@@ -42,9 +31,9 @@ public interface IStatut extends IEntity {
 
     /**
      * Modifie la date de ce statut.
-     * @param calendar la nouvelle date du statut.
+     * @param date la nouvelle date du statut.
      */
-    void setDate(Calendar calendar);
+    void setDate(Calendar date);
 
     /**
      * @return si la place été disponible à ce moment là.

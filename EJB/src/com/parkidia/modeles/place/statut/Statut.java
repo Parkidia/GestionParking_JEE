@@ -11,63 +11,52 @@ import org.codehaus.jackson.annotate.JsonBackReference;
 import javax.persistence.*;
 import java.util.Calendar;
 
+/**
+ * Représente le statut d'une place.
+ */
 @Entity
+@IdClass(StatutId.class)
 public class Statut extends AbstractEntity implements IStatut {
 
+    /** La date où ce statut à été enregistré. */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @OneToOne(targetEntity = Place.class, optional = false)
-    @JsonBackReference
-    private IPlace place;
-
-    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar date;
 
-    @Column(nullable = false)
-    private boolean disponibilite;
+    /** La place dont ce statut porte sur. */
+    @Id
+    @ManyToOne(targetEntity = Place.class)
+    @JsonBackReference
+    private IPlace place;
 
+    /** Si la place été disponible à ce moment là. */
+    @Column(nullable = false)
+    private boolean disponible;
+
+    /**
+     * La couleur de la voiture qui été garée si la place n'était pas
+     * disponible (RGB).
+     */
     @Column
     private String couleurVoiture;
 
-    /** Créé un nouveau statut. */
+    /** Créé un nouveau statut de place. */
     public Statut() {
+        this.date = Calendar.getInstance();
     }
 
     /**
-     * Créé un nouveau statut avec son identifiant.
-     * @param id l'identifiant du statut.
+     * Créé un nouveau statut de place.
+     * @param place la place dont ce statut porte sur.
+     * @param disponibilite si la place été disponible à ce moment là.
+     * @param couleurVoiture la couleur de la voiture qui été garée si la place
+     * n'était pas disponible (RGB).
      */
-    public Statut(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Créé un nouveau statut pour une place de parking, avec comme date
-     * maintenant.
-     * @param place la place concernée.
-     * @param disponibilite la disponibilité de la place.
-     * @param couleurVoiture la couleur de la voiture présent sur la place ou
-     * <code>null</code> si la place est libre.
-     */
-    public Statut(IPlace place, boolean disponibilite,
-                  String couleurVoiture) {
+    public Statut(IPlace place, boolean disponibilite, String couleurVoiture) {
         this.place = place;
         this.date = Calendar.getInstance();
-        this.disponibilite = disponibilite;
+        this.disponible = disponibilite;
         this.couleurVoiture = couleurVoiture;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override
@@ -77,6 +66,9 @@ public class Statut extends AbstractEntity implements IStatut {
 
     @Override
     public void setPlace(IPlace place) {
+        if (! place.getStatuts().contains(this)) {
+            place.getStatuts().add(this);
+        }
         this.place = place;
     }
 
@@ -86,18 +78,18 @@ public class Statut extends AbstractEntity implements IStatut {
     }
 
     @Override
-    public void setDate(Calendar calendar) {
+    public void setDate(Calendar date) {
         this.date = date;
     }
 
     @Override
     public boolean getDisponible() {
-        return disponibilite;
+        return disponible;
     }
 
     @Override
     public void setDisponible(boolean disponible) {
-        this.disponibilite = disponible;
+        this.disponible = disponible;
     }
 
     @Override
@@ -109,4 +101,5 @@ public class Statut extends AbstractEntity implements IStatut {
     public void setCouleurVoiture(String couleur) {
         this.couleurVoiture = couleur;
     }
+
 }

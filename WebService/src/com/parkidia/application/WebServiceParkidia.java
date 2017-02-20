@@ -19,8 +19,11 @@ public class WebServiceParkidia extends ResourceConfig {
     /** Le chemin racine de l'application. */
     public static final String RACINE = "/";
 
-    /** Le chemin absolu du dossier où sont chargées les images des parkings. */
-    public static final String DOSSIER_IMAGE = "E:\\Parking\\";
+    /**
+     * Le chemin absolu du dossier où sont chargées les images d'overlay des
+     * parkings.
+     */
+    public static final String DOSSIER_IMAGE_OVERLAY = "E:\\Parking\\";
 
     /**
      * Code d'erreur HTTP envoyé quand on essaie d'accéder à un parking
@@ -32,31 +35,31 @@ public class WebServiceParkidia extends ResourceConfig {
      * Code d'erreur HTTP envoyé quand on essaie d'accéder à une place de
      * parking inexistante.
      */
-    public static final int HTTP_ERR_PLACE_INEXISTANTE = 512;
+    public static final int HTTP_ERR_PLACE_INEXISTANTE = 511;
 
     /**
      * Code d'erreur HTTP envoyé quand on essaie de créer une place qui existe
      * déjà.
      */
-    public static final int HTTP_ERR_PLACE_EXISTANTE = 513;
+    public static final int HTTP_ERR_PLACE_EXISTANTE = 512;
 
     /**
      * Code d'erreur HTTP envoyé quand on essaie de modifier un parking mais la
      * clé donnée est invalide.
      */
-    public static final int HTTP_ERR_CLE_INVALIDE = 514;
+    public static final int HTTP_ERR_CLE_INVALIDE = 513;
 
     /**
      * Code d'erreur HTTP envoyé quand une erreur est survenue lors du
      * chargement d'une image sur le serveur.
      */
-    public static final int HTTP_ERR_UPLOAD_IMAGE = 515;
+    public static final int HTTP_ERR_UPLOAD_IMAGE = 514;
 
     /**
      * Code d'erreur HTTP envoyé quand une erreur est survenue lors de la
      * lecture d'une image sur le serveur ou si l'image à lire n'existe pas.
      */
-    public static final int HTTP_ERR_CHARGEMENT_IMAGE = 516;
+    public static final int HTTP_ERR_CHARGEMENT_IMAGE = 515;
 
     /** Créé le web service Parkidia. */
     public WebServiceParkidia() {

@@ -1,24 +1,18 @@
 /*
- * Localisation.java
+ * LocalisationParking.java
  */
 package com.parkidia.modeles.localisation;
 
 import com.parkidia.modeles.AbstractEntity;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 
 /**
- * Représente la localisation d'un objet sur Terre par sa latitude et longitude.
+ * Représente la localisation d'un parking par sa latitude et longitude.
  */
-@Entity
+@MappedSuperclass
 public class Localisation extends AbstractEntity implements ILocalisation {
-
-    /** L'identifiant de la localisation en base de données. */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private int id;
 
     /** La latitude de la localisation. */
     @Column(nullable = false)
@@ -28,28 +22,18 @@ public class Localisation extends AbstractEntity implements ILocalisation {
     @Column(nullable = false)
     private double longitude;
 
-    /** Créé une nouvelle localisation. */
+    /** Créé une nouvelle localisation d'un parking à (0, 0). */
     public Localisation() {
     }
 
     /**
-     * Créé une nouvelle localisation avec sa latitude et longitude.
-     * @param latitude la latitude.
-     * @param longitude la longitude.
+     * Créé une nouvelle localisation d'un parking.
+     * @param latitude la latitude du parking.
+     * @param longitude la longitude du parking.
      */
     public Localisation(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

@@ -16,7 +16,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="EclipseLink" />
         <datasource-mapping>
-          <factory-entry name="Parking" value="3a4dd0fd-c0b6-4c0d-b5cd-47011ca4ca4e" />
+          <factory-entry name="Parking" value="a6c2d392-d5ea-476f-9388-22d72e25fc64" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/META-INF/persistence.xml" />
       </configuration>
