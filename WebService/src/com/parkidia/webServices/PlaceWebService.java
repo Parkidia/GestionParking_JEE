@@ -80,12 +80,14 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" +
                             idParking + "\" n'existe pas.").build();
             // Bonne clé.
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
+                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "de créer une" +
                                    " place pour ce parking : clé " +
@@ -98,6 +100,7 @@ public class PlaceWebService {
             if (place.getNom().equalsIgnoreCase(nom)) {
                 return Response
                         .status(WebServiceParkidia.HTTP_ERR_PLACE_EXISTANTE)
+                        .header("Access-Control-Allow-Origin", "*")
                         .type(MediaType.TEXT_PLAIN_TYPE)
                         .entity("Cette place existe déjà dans ce parking.")
                         .build();
@@ -121,6 +124,7 @@ public class PlaceWebService {
 
         return Response
                 .ok(place, MediaType.APPLICATION_JSON_TYPE)
+                .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
 
@@ -158,12 +162,14 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" +
                             idParking + "\" n'existe pas.").build();
             // Pas la bonne clé.
         } else if (! parking.getCle().equals(cle)) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
+                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit d'enregistrer un" +
                                    " statut pour cette place : clé incorrecte.")
                            .build();
@@ -177,6 +183,7 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PLACE_INEXISTANTE)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Cette place n'existe pas.")
                     .build();
         }
@@ -196,6 +203,7 @@ public class PlaceWebService {
 
         return Response
                 .ok(place, MediaType.APPLICATION_JSON_TYPE)
+                .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
 
@@ -236,12 +244,14 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" +
                             idParking + "\" n'existe pas.").build();
             // Bonne clé.
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
+                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "d'enregistrer un" +
                                    " statut pour cette place : clé " +
@@ -256,6 +266,7 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PLACE_INEXISTANTE)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Cette place n'existe pas.")
                     .build();
         }
@@ -270,6 +281,7 @@ public class PlaceWebService {
 
         return Response
                 .ok(place, MediaType.APPLICATION_JSON_TYPE)
+                .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
 
@@ -299,12 +311,14 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" + idParking +
                             "\" n'existe pas.").build();
             // Bonne clé.
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
+                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "d'enregistrer un" +
                                    " statut pour cette place : clé " +
@@ -320,6 +334,7 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PLACE_INEXISTANTE)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Cette place n'existe pas.")
                     .build();
         }
@@ -331,6 +346,8 @@ public class PlaceWebService {
 
         parking.calculerPlaces();
 
-        return Response.ok().build();
+        return Response.ok()
+                       .header("Access-Control-Allow-Origin", "*")
+                       .build();
     }
 }

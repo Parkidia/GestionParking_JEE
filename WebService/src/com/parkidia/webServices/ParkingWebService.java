@@ -36,7 +36,7 @@ public class ParkingWebService {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ParkingDTO> getTousParking() {
+    public Response getTousParking() {
         List<IParking> parkings = parkingService.listeParkings();
         List<ParkingDTO> parkingDTOS = new Vector<>();
 
@@ -45,7 +45,9 @@ public class ParkingWebService {
             parkingDTOS.add(new ParkingDTO(parking));
         }
 
-        return parkingDTOS;
+        return Response.ok(parkingDTOS)
+                       .header("Access-Control-Allow-Origin", "*")
+                       .build();
     }
 
     /**
@@ -69,12 +71,14 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" + id +
                             "\" n'existe pas.").build();
         } else {
             parking.calculerPlaces();
             return Response
                     .ok(parking, MediaType.APPLICATION_JSON_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .build();
         }
     }
@@ -89,7 +93,7 @@ public class ParkingWebService {
     @POST
     @Path("/{nom}/{latitude}/{longitude}")
     @Produces(MediaType.APPLICATION_JSON)
-    public IParking creerParking(@PathParam("nom") String nom,
+    public Response creerParking(@PathParam("nom") String nom,
                                  @PathParam("latitude") double latitude,
                                  @PathParam("longitude") double longitude) {
         // Créé le parking.
@@ -99,7 +103,9 @@ public class ParkingWebService {
         parkingService.creerParking(parking);
 
         // On le retourne.
-        return parking;
+        return Response.ok(parking)
+                       .header("Access-Control-Allow-Origin", "*")
+                       .build();
     }
 
     /**
@@ -133,11 +139,13 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" + id +
                             "\" n'existe pas.").build();
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
+                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "de créer une" +
                                    " place pour ce parking : clé " +
@@ -176,11 +184,13 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" + id +
                             "\" n'existe pas.").build();
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
+                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "de créer une" +
                                    " place pour ce parking : clé " +
@@ -189,7 +199,9 @@ public class ParkingWebService {
         }
 
         parkingService.supprimerParking(parking);
-        return Response.ok().build();
+        return Response.ok()
+                       .header("Access-Control-Allow-Origin", "*")
+                       .build();
     }
 
     /**
@@ -212,6 +224,7 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" +
                             idParking + "\" n'existe pas.").build();
         } else {
@@ -223,10 +236,13 @@ public class ParkingWebService {
             File fichier = new File(chemin);
 
             if (fichier.exists()) {
-                return Response.ok(new File(chemin)).build();
+                return Response.ok(new File(chemin))
+                               .header("Access-Control-Allow-Origin", "*")
+                               .build();
             } else {
                 return Response
                         .status(WebServiceParkidia.HTTP_ERR_CHARGEMENT_IMAGE)
+                        .header("Access-Control-Allow-Origin", "*")
                         .build();
             }
         }
@@ -264,6 +280,7 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" +
                             idParking + "\" n'existe pas.").build();
         } else {
@@ -272,6 +289,7 @@ public class ParkingWebService {
             if (! cle.equals(parking.getCle())) {
                 return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                                .type(MediaType.TEXT_PLAIN_TYPE)
+                               .header("Access-Control-Allow-Origin", "*")
                                .entity("Vous n'avez pas le droit " +
                                        "d'enregistrer un" +
                                        " statut pour cette place : clé " +
@@ -289,10 +307,13 @@ public class ParkingWebService {
                 enregistrerFichier(in, cheminUpload);
             } catch (IOException e) {
                 return Response.status(WebServiceParkidia.HTTP_ERR_UPLOAD_IMAGE)
+                               .header("Access-Control-Allow-Origin", "*")
                                .build();
             }
 
-            return Response.ok().build();
+            return Response.ok()
+                           .header("Access-Control-Allow-Origin", "*")
+                           .build();
         }
     }
 
