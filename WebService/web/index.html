@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" type="text/css" href="css/materialize.min.css">
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <title>Module d'administration - Parkidia</title>
+    </head>
+
+    <body ng-app="parkidia">
+        <div class="progress" ng-show="loading_finish == null">
+            <div class="indeterminate"></div>
+        </div>
+        <header>
+            <nav>
+                <div class="nav-wrapper ma-couleur">
+                    <a href="http://localhost:8080/GestionParking_war_exploded/" class="brand-logo center"><img src="img/logo.png" alt="Logo Parkidia"></a>
+                </div>
+            </nav>
+        </header>
+
+        <div class="content">
+            <ng-view class="view-animate"></ng-view>
+        </div>
+
+        <footer class="page-footer">
+            <div class="footer-copyright ma-couleur">
+                <div class="container">
+                    © 2016 PAGES Paul, BRAVO Matthieu, BERNARD Guillaume, BRUGEL Maxime
+                </div>
+            </div>
+        </footer>
+
+        <script src="js/vendor/jquery-3.1.1.min.js"></script>
+        <script src="js/vendor/materialize.min.js"></script>
+
+        <script src="js/vendor/angular.min.js"></script>
+        <script src="js/vendor/angular-animate.min.js"></script>
+        <script src="js/vendor/angular-route.min.js"></script>
+
+        <script src="js/controleurs.js"></script>
+        <script src="js/services.js"></script>
+        <script src="js/routes.js"></script>
+    </body>
+</html>

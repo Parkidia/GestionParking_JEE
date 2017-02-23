@@ -1,0 +1,83 @@
+<div id="modal-success" class="modal">
+    <div class="modal-content">
+        <h4>Parking "{{parking.nom}}" créé !</h4>
+        <p>Le parking a été créé avec succès.<br>
+            Veuillez noter sa clé et son identifiant pour pouvoir le modifier :<br><br></p>
+        <p class="center-align id">Identifiant : <strong>{{parking.id}}</strong></p>
+        <p class="center-align id">Clé : <strong>{{parking.cle}}</strong></p><br>
+    </div>
+    <div class="modal-footer">
+        <button class="btn green" ng-click="listeParkings()">OK</button>
+    </div>
+</div>
+
+<div id="modal-err-creer" class="modal">
+    <div class="modal-content">
+        <h4>Impossible de créer le parking.</h4>
+    </div>
+    <div class="modal-footer">
+        <a class="btn red" href="#!">OK</a>
+    </div>
+</div>
+
+<div id="modal-err-image" class="modal">
+    <div class="modal-content">
+        <h4>Impossible de charger l'image du parking.</h4>
+    </div>
+    <div class="modal-footer">
+        <a class="btn red" href="#!">OK</a>
+    </div>
+</div>
+
+<div class="row">
+    <form ng-submit="creerParking()">
+        <div class="col s12 m10 push-m1 l6 push-l3">
+            <div class="card card-ajouter-parking">
+                <div class="card-content">
+                    <span class="card-title">Créer un parking</span>
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="input-field">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input id="nom" type="text" class="validate" ng-model="nom" required>
+                                <label for="nom">Nom du parking</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="file-field input-field">
+                                <div class="file-path-wrapper">
+                                    <span class="fa fa-image prefix"></span>
+                                    <input type="file" id="photo" accept="image/png" required>
+                                    <input class="file-path validate" type="text" placeholder="Charger une image pour le parking">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6 l6">
+                            <div class="input-field">
+                                <i class="material-icons prefix">location_on</i>
+                                <input id="latitude" type="number" step="0.00001" ng-model="latitude" class="validate" required>
+                                <label for="latitude">Latitude</label>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l6">
+                            <div class="input-field">
+                                <i class="material-icons prefix">location_on</i>
+                                <input id="longitude" type="number" step="0.00001" ng-model="longitude" class="validate" required>
+                                <label for="longitude">Longitude</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m8 push-m2 l4 push-l4">
+                            <input type="submit" id="creerParking" class="btn green" ng-disabled="reqSend != null" value="Créer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
