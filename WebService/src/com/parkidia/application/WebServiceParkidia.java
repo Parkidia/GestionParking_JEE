@@ -17,13 +17,18 @@ import javax.ws.rs.ApplicationPath;
 public class WebServiceParkidia extends ResourceConfig {
 
     /** Le chemin racine de l'application. */
-    public static final String RACINE = "/";
+    public static final String RACINE = "/rest/";
 
     /**
      * Le chemin absolu du dossier où sont chargées les images d'overlay des
      * parkings.
      */
-    public static final String DOSSIER_IMAGE_OVERLAY = "E:\\Parking\\";
+    public static final String DOSSIER_IMAGE_OVERLAY = "E:\\Overlay\\";
+
+    /**
+     * Le chemin absolu du dossier où sont chargées les images des parkings.
+     */
+    public static final String DOSSIER_IMAGE = "E:\\Parking\\";
 
     /**
      * Code d'erreur HTTP envoyé quand on essaie d'accéder à un parking

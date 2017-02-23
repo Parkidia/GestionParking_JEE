@@ -6,7 +6,6 @@ package com.parkidia.modeles.parking;
 import com.parkidia.modeles.localisation.Localisation;
 import com.parkidia.modeles.place.IPlace;
 import com.parkidia.modeles.place.Place;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonManagedReference;
 
 import javax.persistence.*;
@@ -31,7 +30,6 @@ public class Parking extends Localisation implements IParking {
 
     /** La clé permettant de modifier le parking. */
     @Column(nullable = false, unique = true)
-    @JsonIgnore
     private String cle;
 
     /** Les places du parking. */

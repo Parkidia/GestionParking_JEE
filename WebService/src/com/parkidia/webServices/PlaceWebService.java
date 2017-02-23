@@ -281,7 +281,6 @@ public class PlaceWebService {
 
         return Response
                 .ok(place, MediaType.APPLICATION_JSON_TYPE)
-                .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
 

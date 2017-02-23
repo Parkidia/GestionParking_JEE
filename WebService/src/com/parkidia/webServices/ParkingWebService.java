@@ -4,7 +4,9 @@
 package com.parkidia.webServices;
 
 import com.parkidia.application.WebServiceParkidia;
-import com.parkidia.dto.ParkingDTO;
+import com.parkidia.dto.ParkingCreationDTO;
+import com.parkidia.dto.ParkingDetailsDTO;
+import com.parkidia.dto.ParkingListeDTO;
 import com.parkidia.modeles.parking.IParking;
 import com.parkidia.modeles.parking.Parking;
 import com.parkidia.services.ParkingService;
@@ -36,18 +38,16 @@ public class ParkingWebService {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTousParking() {
+    public List<ParkingListeDTO> getTousParking() {
         List<IParking> parkings = parkingService.listeParkings();
-        List<ParkingDTO> parkingDTOS = new Vector<>();
+        List<ParkingListeDTO> parkingListeDTOS = new Vector<>();
 
         for (IParking parking : parkings) {
             parking.calculerPlaces();
-            parkingDTOS.add(new ParkingDTO(parking));
+            parkingListeDTOS.add(new ParkingListeDTO(parking));
         }
 
-        return Response.ok(parkingDTOS)
-                       .header("Access-Control-Allow-Origin", "*")
-                       .build();
+        return parkingListeDTOS;
     }
 
     /**
@@ -71,14 +71,13 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" + id +
                             "\" n'existe pas.").build();
         } else {
             parking.calculerPlaces();
             return Response
-                    .ok(parking, MediaType.APPLICATION_JSON_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
+                    .ok(new ParkingDetailsDTO(parking),
+                        MediaType.APPLICATION_JSON_TYPE)
                     .build();
         }
     }
@@ -93,9 +92,9 @@ public class ParkingWebService {
     @POST
     @Path("/{nom}/{latitude}/{longitude}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response creerParking(@PathParam("nom") String nom,
-                                 @PathParam("latitude") double latitude,
-                                 @PathParam("longitude") double longitude) {
+    public ParkingCreationDTO creerParking(@PathParam("nom") String nom,
+                                           @PathParam("latitude") double latitude,
+                                           @PathParam("longitude") double longitude) {
         // Créé le parking.
         IParking parking = new Parking(nom, latitude, longitude);
 
@@ -103,9 +102,7 @@ public class ParkingWebService {
         parkingService.creerParking(parking);
 
         // On le retourne.
-        return Response.ok(parking)
-                       .header("Access-Control-Allow-Origin", "*")
-                       .build();
+        return new ParkingCreationDTO(parking);
     }
 
     /**
@@ -139,13 +136,11 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" + id +
                             "\" n'existe pas.").build();
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
-                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "de créer une" +
                                    " place pour ce parking : clé " +
@@ -159,7 +154,7 @@ public class ParkingWebService {
         parking.calculerPlaces();
         parking = parkingService.majParking(parking);
 
-        return Response.ok(parking).build();
+        return Response.ok(new ParkingDetailsDTO(parking)).build();
     }
 
     /**
@@ -184,13 +179,11 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" + id +
                             "\" n'existe pas.").build();
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
-                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "de créer une" +
                                    " place pour ce parking : clé " +
@@ -199,22 +192,64 @@ public class ParkingWebService {
         }
 
         parkingService.supprimerParking(parking);
-        return Response.ok()
-                       .header("Access-Control-Allow-Origin", "*")
-                       .build();
+        return Response.ok().build();
     }
 
     /**
      * Retourne l'image d'overlay d'un parking.
      * @param idParking l'identifiant du parking.
      * @return une réponse HTTP: <ul>
-     *     <li>{@link WebServiceParkidia#HTTP_ERR_CHARGEMENT_IMAGE}:
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT}
+     * : si le parking n'existe pas.</li>
+     * <li>{@link WebServiceParkidia#HTTP_ERR_CHARGEMENT_IMAGE}:
      * si l'image n'existe pas.</li> <li>200 avec l'image si tout c'est bien
      * passé.</li> </ul>
      */
     @GET
     @Path("/overlay/{idParking}")
-    @Produces("image/jpg")
+    @Produces("image/png")
+    public Response getOverlayParking(@PathParam("idParking") int idParking) {
+        // Récupère le parking.
+        IParking parking = parkingService.getParking(idParking);
+
+        // S'il n'existe pas.
+        if (parking == null) {
+            return Response
+                    .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity("Le parking avec l'identifiant \"" +
+                            idParking + "\" n'existe pas.").build();
+        } else {
+
+            // Le chemin de l'image.
+            String chemin =
+                    WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + idParking +
+                    ".png";
+            File fichier = new File(chemin);
+
+            if (fichier.exists()) {
+                return Response.ok(new File(chemin)).build();
+            } else {
+                return Response
+                        .status(WebServiceParkidia.HTTP_ERR_CHARGEMENT_IMAGE)
+                        .build();
+            }
+        }
+    }
+
+    /**
+     * Retourne l'image d'un parking.
+     * @param idParking l'identifiant du parking.
+     * @return une réponse HTTP: <ul>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT}
+     * : si le parking n'existe pas.</li>
+     * <li>{@link WebServiceParkidia#HTTP_ERR_CHARGEMENT_IMAGE}:
+     * si l'image n'existe pas.</li> <li>200 avec l'image si tout c'est bien
+     * passé.</li> </ul>
+     */
+    @GET
+    @Path("/photo/{idParking}")
+    @Produces("image/png")
     public Response getImageParking(@PathParam("idParking") int idParking) {
         // Récupère le parking.
         IParking parking = parkingService.getParking(idParking);
@@ -224,25 +259,21 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" +
                             idParking + "\" n'existe pas.").build();
         } else {
 
             // Le chemin de l'image.
             String chemin =
-                    WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + idParking +
-                    ".jpg";
+                    WebServiceParkidia.DOSSIER_IMAGE + idParking +
+                    ".png";
             File fichier = new File(chemin);
 
             if (fichier.exists()) {
-                return Response.ok(new File(chemin))
-                               .header("Access-Control-Allow-Origin", "*")
-                               .build();
+                return Response.ok(new File(chemin)).build();
             } else {
                 return Response
                         .status(WebServiceParkidia.HTTP_ERR_CHARGEMENT_IMAGE)
-                        .header("Access-Control-Allow-Origin", "*")
                         .build();
             }
         }
@@ -280,7 +311,6 @@ public class ParkingWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
                     .type(MediaType.TEXT_PLAIN_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Le parking avec l'identifiant \"" +
                             idParking + "\" n'existe pas.").build();
         } else {
@@ -289,7 +319,6 @@ public class ParkingWebService {
             if (! cle.equals(parking.getCle())) {
                 return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                                .type(MediaType.TEXT_PLAIN_TYPE)
-                               .header("Access-Control-Allow-Origin", "*")
                                .entity("Vous n'avez pas le droit " +
                                        "d'enregistrer un" +
                                        " statut pour cette place : clé " +
@@ -300,20 +329,81 @@ public class ParkingWebService {
             // Le chemin où le fichier sera upload.
             String cheminUpload =
                     WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + idParking +
-                    ".jpg";
+                    ".png";
 
             // Enregistre l'image.
             try {
                 enregistrerFichier(in, cheminUpload);
             } catch (IOException e) {
                 return Response.status(WebServiceParkidia.HTTP_ERR_UPLOAD_IMAGE)
-                               .header("Access-Control-Allow-Origin", "*")
                                .build();
             }
 
-            return Response.ok()
-                           .header("Access-Control-Allow-Origin", "*")
-                           .build();
+            return Response.ok().build();
+        }
+    }
+
+    /**
+     * Charge une image sur le serveur correspondant à un parking.
+     * @param idParking l'identifiant du parking dont l'image représente.
+     * @param cle le clé permettant de modifier des informations du parking.
+     * @param in le flux permettant de lire l'image.
+     * @param desc une description du fichier de l'image.
+     * @return Une réponse HTTP : <ul>
+     *     <li>{@link WebServiceParkidia#HTTP_ERR_UPLOAD_IMAGE}
+     * : si un problème est survenu lors du chargement de l'image.</li>
+     * <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT} : Si le
+     * parking n'existe pas.</li>
+     * <li>{@link WebServiceParkidia#HTTP_ERR_CLE_INVALIDE}
+     * : Si la clé donnée n'est pas la bonne.</li> <li>200 si le chargement a
+     * été réalisé avec succès.</li> </ul>
+     */
+    @POST
+    @Path("/photo/{idParking}/{cle}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response ajouterPhoto(@PathParam("idParking") int idParking,
+                                 @PathParam("cle") String cle,
+                                 @FormDataParam("image") InputStream in,
+                                 @FormDataParam("image")
+                                         FormDataContentDisposition desc) {
+
+        // Récupère le parking.
+        IParking parking = parkingService.getParking(idParking);
+
+        // S'il n'existe pas.
+        if (parking == null) {
+            return Response
+                    .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity("Le parking avec l'identifiant \"" +
+                            idParking + "\" n'existe pas.").build();
+        } else {
+
+            // Bonne clé.
+            if (! cle.equals(parking.getCle())) {
+                return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
+                               .type(MediaType.TEXT_PLAIN_TYPE)
+                               .entity("Vous n'avez pas le droit " +
+                                       "d'enregistrer un" +
+                                       " statut pour cette place : clé " +
+                                       "incorrecte.")
+                               .build();
+            }
+
+            // Le chemin où le fichier sera upload.
+            String cheminUpload =
+                    WebServiceParkidia.DOSSIER_IMAGE + idParking +
+                    ".png";
+
+            // Enregistre l'image.
+            try {
+                enregistrerFichier(in, cheminUpload);
+            } catch (IOException e) {
+                return Response.status(WebServiceParkidia.HTTP_ERR_UPLOAD_IMAGE)
+                               .build();
+            }
+
+            return Response.ok().build();
         }
     }
 
