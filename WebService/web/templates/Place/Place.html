@@ -1,0 +1,17 @@
+<div class="card card-place">
+    <div class="card-content">
+        <span class="card-title grey-text text-darken-4">{{place.nom}}
+            <i ng-show="!place.dernierStatut.disponible" class="fa fa-car right" style="color: rgb({{place.dernierStatut.couleurVoiture}})"></i>
+            <i ng-show="place.handicapee" class="fa fa-wheelchair right"></i>
+        </span>
+        <br /><br />
+        <div class="lat-long">
+            Lat: {{place.latitude}} / Long: {{place.longitude}} / Orientation: {{place.orientation}}
+        </div>
+    </div>
+    <div class="card-action">
+        <a data-target="modal-statut-place" modal data-ng-click="$parent.setPlaceCourante(place)" class="btn parkidia-couleur waves-effect waves-light">Statut</a>
+        <a data-target="modal-modifier-place" modal data-ng-click="$parent.setPlaceCourante(place)" class="btn green waves-effect waves-light">Modifier</a>
+        <a data-target="modal-supprimer-place" modal data-ng-click="$parent.setPlaceCourante(place)" class="btn red waves-effect waves-light">Supprimer</a>
+    </div>
+</div>

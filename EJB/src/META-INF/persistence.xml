@@ -9,13 +9,6 @@
 
         <!-- Nom JNDI vers la connexion à la base de données gérée par le serveur. -->
         <jta-data-source>jdbc/parking</jta-data-source>
-        <class>com.Test</class>
-        <class>com.parkidia.modeles.parking.Parking</class>
-        <class>com.parkidia.modeles.place.Place</class>
-        <class>com.parkidia.modeles.place.statut.Statut</class>
-        <class>com.parkidia.modeles.parking.Parking</class>
-        <class>com.parkidia.modeles.place.Place</class>
-        <class>com.parkidia.modeles.Statut</class>
 
         <properties>
 
@@ -31,6 +24,8 @@
                       value="jdbc:postgresql://localhost:5432/parking"/>
             <property name="eclipselink.jdbc.driver"
                       value="org.postgresql.Driver"/>
+
+            <property name="eclipselink.weaving.internal" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>

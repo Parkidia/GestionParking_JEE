@@ -1,21 +1,28 @@
-/*
- * routes.js
- */
+// Configuration des routes.
+parkidiaApp.config(function ($locationProvider, $routeProvider) {
 
-// Créé les routes.
-parkidia.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+    // Préfixe des URLs.
+    $locationProvider.hashPrefix('!');
 
-    // Page d'accueil.
+    // Accueil.
     $routeProvider.when("/", {
-        templateUrl: "templates/listeParkings.html",
+        templateUrl: "templates/Parking/ListeParkings.html",
         controller: "ListeParkingsController"
 
     }).when("/creerParking", {
-        templateUrl: "templates/creerParking.html",
+        templateUrl: "templates/Parking/CreerParking.html",
         controller: "CreerParkingController"
 
     }).when("/parking/:id", {
-        templateUrl: "templates/detailsParking.html",
+        templateUrl: "templates/Parking/DetailsParking.html",
         controller: "DetailsParkingController"
-    });
-}]);
+
+    }).when("/creerJson/:id", {
+        templateUrl: "templates/Parking/CreerJson.html",
+        controller: "CreerJsonController"
+
+    }).when("/erreur-404", {
+        templateUrl: "templates/Erreur404.html"
+
+    }).otherwise("/erreur-404");
+});

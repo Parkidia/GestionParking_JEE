@@ -1,0 +1,286 @@
+<div class="modal" id="modal-creer-place">
+    <form name="creerPlaceForm" data-ng-submit="creerPlaceParking()">
+        <div class="modal-title parkidia-couleur">
+            Créer une nouvelle place de parking
+        </div>
+        <div class="modal-content">
+            <div class="row">
+                <div class="col s12">
+                    <div class="input-field">
+                        <input type="text" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" ng-model="cleParking" class="validate" required>
+                        <label>Clé du parking</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="input-field">
+                        <input type="text" ng-model="nomPlace" class="validate" required>
+                        <label>Nom de la place</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m3 l3">
+                    <div class="input-field">
+                        <input type="number" step="0.00001" class="validate" ng-model="latitudePlace" required>
+                        <label>Latitude</label>
+                    </div>
+                </div>
+                <div class="col s12 m3 l3">
+                    <div class="input-field">
+                        <input type="number" step="0.00001" class="validate" ng-model="longitudePlace" required>
+                        <label>Longitude</label>
+                    </div>
+                </div>
+                <div class="col s12 m3 l3">
+                    <div class="input-field">
+                        <input type="number" step="1" class="validate" ng-model="orientationPlace" required>
+                        <label>Orientation</label>
+                    </div>
+                </div>
+                <div class="col s12 m3 l3">
+                    <div class="input-field">
+                        <input type="checkbox" ng-model="handicapeePlace" id="handicapee"/>
+                        <label for="handicapee">Handicapée</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-close btn red waves-effect waves-light">Annuler</button>
+            <button type="submit" class="modal-close btn green waves-effect waves-light" data-ng-disabled="creerPlaceForm.$invalid || creerPlaceForm.$pending">Créer</button>
+        </div>
+    </form>
+</div>
+
+<!-- ********************************************************************** -->
+
+<div class="modal" id="modal-parking-modifie">
+    <div class="modal-title green white-text">
+        Le parking "{{parking.nom}}" a été modifié !
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="modal-close btn green waves-effect waves-light">OK</button>
+    </div>
+</div>
+
+<!-- ********************************************************************** -->
+
+<div class="modal" id="modal-supprimer-place">
+    <form name="supprimerPlaceForm" data-ng-submit="supprimerPlaceParking()">
+        <div class="modal-title red white-text">
+            Voules-vous vraiment supprimer la place "{{placeCourante.nom}}" ?
+        </div>
+        <div class="modal-content">
+            <div class="input-field">
+                <input type="text" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" ng-model="cleParking" class="validate" required>
+                <label>Clé du parking</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-close btn parkidia-couleur waves-effect waves-light">Annuler</button>
+            <button type="submit" class="modal-close btn red waves-effect waves-light" data-ng-disabled="supprimerPlaceForm.$invalid || supprimerPlaceForm.$pending">Supprimer</button>
+        </div>
+    </form>
+</div>
+
+<!-- ********************************************************************** -->
+
+<div class="modal" id="modal-modifier-place">
+    <form name="modifierPlaceForm" data-ng-submit="modifierPlaceParking()">
+        <div class="modal-title parkidia-couleur">
+            Modifier la place "{{placeCourante.nom}}"
+        </div>
+        <div class="modal-content">
+            <div class="row">
+                <div class="col s12">
+                    <div class="input-field">
+                        <input type="text" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" ng-model="cleParking" class="validate" required>
+                        <label>Clé du parking</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m3 l3">
+                    <div class="input-field">
+                        <input type="number" step="0.00001" class="validate" data-ng-value="placeCourante.latitude" ng-model="latitudePlace" required>
+                        <label class="active">Latitude</label>
+                    </div>
+                </div>
+                <div class="col s12 m3 l3">
+                    <div class="input-field">
+                        <input type="number" step="0.00001" class="validate" data-ng-value="placeCourante.longitude" ng-model="longitudePlace" required>
+                        <label class="active">Longitude</label>
+                    </div>
+                </div>
+                <div class="col s12 m3 l3">
+                    <div class="input-field">
+                        <input type="number" step="1" class="validate" ng-model="orientationPlace" data-ng-value="placeCourante.orientation" required>
+                        <label class="active">Orientation</label>
+                    </div>
+                </div>
+                <div class="col s12 m3 l3">
+                    <div class="input-field">
+                        <input type="checkbox" ng-model="handicapeePlace" id="handicapee" data-ng-checked="placeCourante.handicapee"/>
+                        <label for="handicapee">Handicapée</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-close btn red waves-effect waves-light">Annuler</button>
+            <button type="submit" class="modal-close btn green waves-effect waves-light" data-ng-disabled="modifierPlaceForm.$invalid || modifierPlaceForm.$pending">Modifier</button>
+        </div>
+    </form>
+</div>
+
+<!-- ********************************************************************** -->
+
+<div class="modal" id="modal-statut-place">
+    <form name="majStatutPlaceForm" data-ng-submit="majStatutPlace()">
+        <div class="modal-title parkidia-couleur white-text">
+            Mettre à jour le statut de la place "{{placeCourante.nom}}" ?
+        </div>
+        <div class="modal-content">
+            <div class="input-field">
+                <input type="text" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" ng-model="cleParking" class="validate" required>
+                <label>Clé du parking</label>
+            </div>
+            <div class="row">
+                <div class="col s12 m6">
+                    <div class="input-field">
+                        <input type="checkbox" ng-model="dispoPlace" id="dispo" data-ng-checked="!placeCourante.dernierStatut.disponible"/>
+                        <label for="dispo">Occupée</label>
+                    </div>
+                </div>
+                <div class="col s12 m6">
+                    <div class="input-field">
+                        <input type="color" id="couleurVoiture" data-ng-model="couleurVoiture" data-ng-disabled="!dispoPlace" data-ng-value="!placeCourante.dernierStatut.disponible ? enHex('rgb(' + placeCourante.dernierStatut.couleurVoiture + ')') : ''">
+                        <label for="couleurVoiture">Couleur de la voiture</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-close btn parkidia-couleur waves-effect waves-light">Annuler</button>
+            <button type="submit" class="modal-close btn green waves-effect waves-light" data-ng-disabled="majStatutPlaceForm.$invalid || majStatutPlaceForm.$pending">Mettre à jour</button>
+        </div>
+    </form>
+</div>
+
+<!-- ********************************************************************** -->
+
+<div class="modal" id="modal-modifier-parking">
+    <form name="modifierParkingForm" data-ng-submit="modifierParkingCourant()">
+        <div class="modal-title parkidia-couleur white-text">
+            Modifier le parking "{{parking.nom}}" ?
+        </div>
+        <div class="modal-content">
+            <div class="row">
+                <div class="col s12">
+                    <div class="input-field">
+                        <input type="text" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" ng-model="cleParking" class="validate" required>
+                        <label>Clé du parking</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="input-field">
+                        <input type="text" class="validate" id="nomParking" data-ng-model="nom" data-ng-value="parking.nom" required>
+                        <label for="nomParking" class="active">Nom du Parking</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="file-field input-field">
+                        <div class="file-path-wrapper">
+                            <input type="file" id="overlay" accept="image/png">
+                            <input class="file-path validate" type="text" placeholder="Charger une image d'overlay pour le parking">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m6 l6">
+                    <div class="input-field">
+                        <input type="number" step="0.00001" class="validate" id="latitude" data-ng-model="latitude" data-ng-value="parking.latitude" required>
+                        <label for="latitude" class="active">Latitude</label>
+                    </div>
+                </div>
+                <div class="col s12 m6 l6">
+                    <div class="input-field">
+                        <input type="number" step="0.00001" class="validate" id="longitude" data-ng-model="longitude" data-ng-value="parking.longitude" required>
+                        <label for="longitude" class="active">Longitude</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-close btn parkidia-couleur waves-effect waves-light">Annuler</button>
+            <button type="submit" class="modal-close btn green waves-effect waves-light" data-ng-disabled="modifierParkingForm.$invalid || modifierParkingForm.$pending">Modifier</button>
+        </div>
+    </form>
+</div>
+
+<!-- ********************************************************************** -->
+
+<div class="modal" id="modal-supprimer-parking">
+    <form name="supprimerParkingForm" data-ng-submit="supprimerParkingCourant()">
+        <div class="modal-title red white-text">
+            Voules-vous vraiment supprimer le parking "{{parking.nom}}" ?
+        </div>
+        <div class="modal-content">
+            <div class="input-field">
+                <input type="text" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" ng-model="cleParking" class="validate" required>
+                <label>Clé du parking</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-close btn parkidia-couleur waves-effect waves-light">Annuler</button>
+            <button type="submit" class="modal-close btn red waves-effect waves-light" data-ng-disabled="supprimerParkingForm.$invalid || supprimerParkingForm.$pending">Supprimer</button>
+        </div>
+    </form>
+</div>
+
+<!-- ********************************************************************** -->
+
+<br />
+<div class="row">
+    <div class="col s12 m12 l8 push-l2 center-align">
+        <button type="submit" class="btn green waves-effect waves-light" data-target="modal-modifier-parking" modal>Modifier le parking</button>
+        <button type="button" data-target="modal-supprimer-parking" modal class="btn red waves-effectwaves-light">Supprimer le parking</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s10 m6 push-m3 push-l3 l6">
+        <h5>Liste des places</h5>
+    </div>
+</div>
+<div class="row z-depth-1">
+    <form class="col s8 m6 push-m1 push-l3 l6">
+        <div class="input-field">
+            <i class="fa fa-search prefix"></i>
+            <input id="search" type="text" placeholder="Rechercher ..." ng-model="recherche">
+        </div>
+    </form>
+    <div class="col s2 m2 l1 right">
+        <a href="#!/creerJson/{{parking.id}}" class="btn-floating btn-large waves-effect waves-light parkidia-couleur btn-bar"><i class="fa fa-image"></i></a>
+    </div>
+    <div class="col s2 m2 l1 right">
+        <a data-target="modal-creer-place" modal class="btn-floating btn-large waves-effect waves-light green btn-bar"><i class="fa fa-plus"></i></a>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="vide" data-ng-show="(parking.places | filter: recherche).length == 0">Aucunes Place</div>
+    <div class="col s12 m6 l2" data-ng-repeat="p in parking.places | orderBy: 'nom' | filter: recherche">
+        <place data="p" />
+    </div>
+</div>
+
+<a data-target="modal-parking-modifie" modal data-ng-show="false" open="parkingModifie"></a>

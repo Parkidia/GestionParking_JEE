@@ -1,0 +1,23 @@
+<div class="card sticky-action">
+    <div class="card-image waves-effect waves-block waves-light">
+        <img class="activator" src="http://localhost:8080/GestionParking_war_exploded/rest/parking/photo/{{parking.id}}" alt="Photo du parking {{p.nom}}" title="Photo du parking {{p.nom}}" onerror="this.src = 'img/not-found.JPG'">
+    </div>
+    <div class="card-content">
+        <span class="card-title activator grey-text text-darken-4">{{parking.nom}}<i class="fa fa-plus right"></i></span>
+    </div>
+    <div class="card-reveal">
+        <span class="card-title activator grey-text text-darken-4">{{parking.nom}}<i class="fa fa-close right"></i></span>
+        <div class="nbPlaces">
+            <span>
+                <strong>{{parking.nbPlacesLibres}}</strong> / {{parking.nbPlaces}}<br />
+                Places libres
+            </span>
+        </div>
+        <div class="lat-long">
+            Lat: {{parking.latitude}} / Long: {{parking.longitude}}
+        </div>
+    </div>
+    <div class="card-action">
+        <a href="#!/parking/{{parking.id}}" class="btn parkidia-couleur waves-effect waves-light">Modifier</a>
+    </div>
+</div>

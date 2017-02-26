@@ -42,6 +42,9 @@ public abstract class AbstractDAO<E extends IEntity> {
      * @param entite l'entité à supprimer.
      */
     public void supprimer(E entite) {
-        em.remove(entite);
+        em.remove(maj(entite));
+
+        // Force le vidage du cache.
+        em.getEntityManagerFactory().getCache().evictAll();
     }
 }

@@ -73,16 +73,15 @@ public class Parking extends Localisation implements IParking {
         if (! place.getParking().equals(this)) {
             place.setParking(this);
         }
-        boolean ajout = getPlaces().add(place);
-        return ajout;
+        return getPlaces().add(place);
     }
 
     @Override
     public boolean supprimerPlace(IPlace place) {
+        boolean suppression = getPlaces().remove(place);
         if (place.getParking().equals(this)) {
             place.setParking(null);
         }
-        boolean suppression = getPlaces().remove(place);
         return suppression;
     }
 

@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="row">
+        <div class="col s12 m6 push-m3 l4 push-l4">
+            <div input-field>
+                <button data-ng-click="genererJSON()" data-ng-disabled="!valide" class="btn green btn-full">Générer le JSON</button>
+            </div>
+        </div>
+    </div>
+    <div class="row image-row">
+        <div class="image-wrapper">
+            <img id="image" src="http://localhost:8080/GestionParking_war_exploded/rest/parking/overlay/{{parking.id}}" alt="Overlay du parking">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m12 l12 push-l2" ng-repeat="p in parking.places | orderBy: 'id'">
+            <div class="row">
+                <div class="col s12 m6 l1">
+                    <div class="input-field">
+                        <input type="text" data-ng-model="p.nom" readonly>
+                        <label class="active">Nom</label>
+                    </div>
+                </div>
+                <div class="col s6 m6 l2">
+                    <div class="input-field">
+                        <input type="checkbox" id="occupee{{$index}}" data-ng-checked="!p.dernierStatut.disponible" disabled="disabled" />
+                        <label for="occupee{{$index}}">Occupée</label>
+                    </div>
+                </div>
+                <div class="col s12 m6 l2">
+                    <div class="input-field">
+                        <input type="color" class="validate" id="couleurVoiture{{$index}}" data-ng-value="!p.dernierStatut.disponible ? enHex('rgb(' + p.dernierStatut.couleurVoiture + ')') : ''" disabled="disabled">
+                        <label class="color" for="couleurVoiture{{$index}}">Voiture</label>
+                    </div>
+                </div>
+                <div class="col s6 m6 l1">
+                    <div class="input-field">
+                        <input type="number" step="1" ng-value="decoup[$index].x" placeholder="" readonly>
+                        <label class="active">Min X</label>
+                    </div>
+                </div>
+                <div class="col s6 m6 l1">
+                    <div class="input-field">
+                        <input type="number" step="1" ng-value="decoup[$index].y" placeholder="" readonly>
+                        <label class="active">Min Y</label>
+                    </div>
+                </div>
+                <div class="col s6 m6 l1">
+                    <div class="input-field">
+                        <input type="number" step="1" ng-value="decoup[$index].x + decoup[$index].width" placeholder="" readonly>
+                        <label class="active">Max X</label>
+                    </div>
+                </div>
+                <div class="col s6 m6 l1">
+                    <div class="input-field">
+                        <input type="number" step="1" ng-value="decoup[$index].y + decoup[$index].height" placeholder="" readonly>
+                        <label class="active">Max Y</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a id="downloadJson" ng-hide="true"></a>

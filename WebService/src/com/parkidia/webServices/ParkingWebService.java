@@ -93,8 +93,10 @@ public class ParkingWebService {
     @Path("/{nom}/{latitude}/{longitude}")
     @Produces(MediaType.APPLICATION_JSON)
     public ParkingCreationDTO creerParking(@PathParam("nom") String nom,
-                                           @PathParam("latitude") double latitude,
-                                           @PathParam("longitude") double longitude) {
+                                           @PathParam("latitude") double
+                                                   latitude,
+                                           @PathParam("longitude") double
+                                                   longitude) {
         // Créé le parking.
         IParking parking = new Parking(nom, latitude, longitude);
 
@@ -189,6 +191,38 @@ public class ParkingWebService {
                                    " place pour ce parking : clé " +
                                    "incorrecte.")
                            .build();
+        }
+
+        // Supprime les images.
+        // On ne sait pas le format.
+        File imgOverlay =
+                new File(
+                        WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + id + ".jpg");
+        try {
+            imgOverlay.delete();
+        } catch (Exception e) {
+        }
+
+        imgOverlay =
+                new File(
+                        WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + id + ".png");
+        try {
+            imgOverlay.delete();
+        } catch (Exception e) {
+        }
+
+        File imgParking =
+                new File(WebServiceParkidia.DOSSIER_IMAGE + id + ".jpg");
+        try {
+            imgParking.delete();
+        } catch (Exception e) {
+        }
+
+        imgParking =
+                new File(WebServiceParkidia.DOSSIER_IMAGE + id + ".png");
+        try {
+            imgParking.delete();
+        } catch (Exception e) {
         }
 
         parkingService.supprimerParking(parking);

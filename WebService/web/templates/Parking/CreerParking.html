@@ -1,0 +1,61 @@
+<div class="modal" id="parking-resultat">
+    <div class="modal-title green white-text">
+        Parking "{{parkingCree.nom}}" créé avec succès !
+    </div>
+    <div class="modal-content">
+        <div class="id-cle">
+            <span>ID : <strong>{{parkingCree.id}}</strong></span>
+            <span>Clé : <strong>{{parkingCree.cle}}</strong></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!/" class="modal-close btn green waves-effect waves-light">OK</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12 m10 push-m1 l6 push-l3">
+        <br /><h5>Créer un parking</h5><br />
+        <form name="creerParkingForm" data-ng-submit="nouveauParking()">
+            <div class="row">
+                <div class="col s12">
+                    <div class="input-field">
+                        <input type="text" class="validate" id="nomParking" data-ng-model="nom" required>
+                        <label for="nomParking">Nom du Parking</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="file-field input-field">
+                        <div class="file-path-wrapper">
+                            <input type="file" id="overlay" accept="image/png" required>
+                            <input class="file-path validate" type="text" placeholder="Charger une image d'overlay pour le parking">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m6 l6">
+                    <div class="input-field">
+                        <input type="number" step="0.00001" class="validate" id="latitude" data-ng-model="latitude" required>
+                        <label for="latitude">Latitude</label>
+                    </div>
+                </div>
+                <div class="col s12 m6 l6">
+                    <div class="input-field">
+                        <input type="number" step="0.00001" class="validate" id="longitude" data-ng-model="longitude" required>
+                        <label for="longitude">Longitude</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m6 push-m3 l3 push-l5">
+                    <button type="submit" class="btn green waves-effect btn-full waves-light" data-ng-disabled="creerParkingForm.$invalid || creerParkingForm.$pending">Créer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<a data-target="parking-resultat" modal data-ng-show="false" open="parkingOk"><a>

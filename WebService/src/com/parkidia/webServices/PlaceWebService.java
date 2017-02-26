@@ -62,7 +62,8 @@ public class PlaceWebService {
      * passé.</li> </ul>
      */
     @POST
-    @Path("/{idParking}/{cle}/{nom}/{handicapee}/{latitude}/{longitude}/{orientation}")
+    @Path("/{idParking}/{cle}/{nom}/{handicapee}/{latitude}/{longitude" +
+          "}/{orientation}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response creerPlace(@PathParam("idParking") int idParking,
                                @PathParam("cle") String cle,
@@ -87,7 +88,6 @@ public class PlaceWebService {
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
-                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "de créer une" +
                                    " place pour ce parking : clé " +
@@ -100,7 +100,6 @@ public class PlaceWebService {
             if (place.getNom().equalsIgnoreCase(nom)) {
                 return Response
                         .status(WebServiceParkidia.HTTP_ERR_PLACE_EXISTANTE)
-                        .header("Access-Control-Allow-Origin", "*")
                         .type(MediaType.TEXT_PLAIN_TYPE)
                         .entity("Cette place existe déjà dans ce parking.")
                         .build();
@@ -124,7 +123,6 @@ public class PlaceWebService {
 
         return Response
                 .ok(place, MediaType.APPLICATION_JSON_TYPE)
-                .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
 
@@ -169,7 +167,6 @@ public class PlaceWebService {
         } else if (! parking.getCle().equals(cle)) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
-                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit d'enregistrer un" +
                                    " statut pour cette place : clé incorrecte.")
                            .build();
@@ -183,7 +180,6 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PLACE_INEXISTANTE)
                     .type(MediaType.TEXT_PLAIN_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Cette place n'existe pas.")
                     .build();
         }
@@ -203,7 +199,6 @@ public class PlaceWebService {
 
         return Response
                 .ok(place, MediaType.APPLICATION_JSON_TYPE)
-                .header("Access-Control-Allow-Origin", "*")
                 .build();
     }
 
@@ -251,7 +246,6 @@ public class PlaceWebService {
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
-                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "d'enregistrer un" +
                                    " statut pour cette place : clé " +
@@ -266,7 +260,6 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PLACE_INEXISTANTE)
                     .type(MediaType.TEXT_PLAIN_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Cette place n'existe pas.")
                     .build();
         }
@@ -317,7 +310,6 @@ public class PlaceWebService {
         } else if (! cle.equals(parking.getCle())) {
             return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
                            .type(MediaType.TEXT_PLAIN_TYPE)
-                           .header("Access-Control-Allow-Origin", "*")
                            .entity("Vous n'avez pas le droit " +
                                    "d'enregistrer un" +
                                    " statut pour cette place : clé " +
@@ -333,20 +325,17 @@ public class PlaceWebService {
             return Response
                     .status(WebServiceParkidia.HTTP_ERR_PLACE_INEXISTANTE)
                     .type(MediaType.TEXT_PLAIN_TYPE)
-                    .header("Access-Control-Allow-Origin", "*")
                     .entity("Cette place n'existe pas.")
                     .build();
         }
 
         // Supprime.
         parking.supprimerPlace(place);
-        parkingService.majParking(parking);
         placeService.supprimerPlace(place);
 
         parking.calculerPlaces();
 
         return Response.ok()
-                       .header("Access-Control-Allow-Origin", "*")
                        .build();
     }
 }

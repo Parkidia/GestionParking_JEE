@@ -1,122 +1,264 @@
 /* style.css */
 
+/* -------------------------------------------------------------------------- */
+
 header {
     position: fixed;
-    right: 0;
     top: 0;
-    left: 0;
-    z-index: 10;
-}
-
-.page-footer {
-    position: fixed;
-    padding: 0 !important;
-    bottom: 0;
     right: 0;
     left: 0;
-    z-index: 10;
+    z-index: 110;
 }
 
-.content {
-    margin-top: 64px;
-    margin-bottom: 64px;
-    padding: 10px 10px 0 10px;
-}
-
-.ma-couleur {
-    background-color: #2F8CDF !important;
+.chargement-page {
+    position: fixed;
+    margin: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 111;
+    background-color: #FFF;
 }
 
 .brand-logo img {
     width: 50%;
-    margin-top: 10px;
+    margin: 10px;
 }
 
-#search {
-    text-align: center;
-    font-size: 20px;
-}
-
-.input-field input[type=text]:focus + label {
-    color: #2F8CDF;
-}
-
-.input-field input[type=text]:focus {
-    border-bottom: 1px solid #2F8CDF;
-    box-shadow: 0 1px 0 0 #2F8CDF;
-}
-
-.input-field .prefix.active {
-    color: #2F8CDF;
-}
-
-.progress {
+footer {
     position: fixed;
-    margin: 0;
-    top: 0;
-    left: 0;
+    bottom: 0;
     right: 0;
-    z-index: 80;
-    background-color: #2F8CDF;
+    left: 0;
+    z-index: 110;
+    padding: 15px;
 }
 
-.indeterminate {
-    background-color: #FFF !important;
+.content {
+    margin: 64px 0;
 }
 
-.card-parking button {
+.parkidia-couleur {
+    background-color: #2F8CDF !important;
+    color: #FFF !important;
+}
+
+.fa {
+    color: #2F8CDF;
+}
+
+.btn-bar {
+    margin-top: 12px;
+}
+
+.btn-full {
     width: 100%;
 }
 
-.card-parking img {
-    width: 300px !important;
-    height: 200px !important;
+.card-action {
+    text-align: center;
+}
+
+.modal-title {
+    padding: 24px;
+}
+
+.modal-footer button, .modal-footer a {
+    margin: 6px 5px !important;
+}
+
+.modal-title {
+    font-size: 25px;
+}
+
+.vide {
+    text-align: center;
+    font-size: 25px;
+    color: #2F8CDF;
+    font-style: italic;
+}
+
+.file-field .file-path-wrapper {
+    padding: 0;
+}
+
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    margin-bottom: -37px;
+}
+
+input[type="color"]+label {
+    padding-left: 50px;
+    cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+}
+
+/* ----------------------------- Anime vues --------------------------------- */
+
+.view.ng-enter {
+    animation: view-enter-absolute .5s linear;
+}
+
+.view.ng-leave {
+    animation: view-exit-absolute .5s linear;
+}
+
+.ng-enter {
+    animation: view-enter 1s linear;
+}
+
+@keyframes view-enter {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes view-exit {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes view-enter-absolute {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes view-exit-absolute {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* ------------------------------ Parking ----------------------------------- */
+
+#search {
+    text-align: center;
+    font-size: 25px;
+}
+
+.nbPlaces {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 90px;
+    text-align: center;
+}
+
+.nbPlaces span {
+    font-size: 15px;
+}
+
+.nbPlaces strong {
+    color: #2F8CDF;
+    font-weight: bolder;
+    font-size: 30px;
 }
 
 .lat-long {
     position: absolute;
-    right: 0;
-    left: 0;
     bottom: 80px;
-    text-align: center;
-}
-
-.parking-place {
-    position: absolute;
     left: 0;
     right: 0;
-    top: 100px;
     text-align: center;
 }
 
-.parking-place span {
-    font-size: 25px;
+.id-cle span {
+    display: block;
+    text-align: center;
+    font-size: 20px;
 }
 
-.parking-place span strong {
-    font-weight: bolder;
-    font-size: 35px;
-    color: #2F8CDF;
-}
-
-.btn-add-parking {
-    bottom: 0;
-    top: 58px;
-}
-
-.card-ajouter-parking input[type="submit"] {
-    width: 100%;
-}
-
-.modal {
-    z-index: 100;
-}
-
-.id strong {
-    font-weight: bolder;
+.id-cle strong {
     font-size: 30px;
-    color: #2F8CDF;
-    display: inline-block;
+    color: #4caf50;
     vertical-align: middle;
     margin-left: 50px;
+}
+
+/* ------------------------------- Places ----------------------------------- */
+
+.card-place .card-action {
+    padding: 15px;
+}
+
+.card-place .card-action a {
+    padding: 0 5px;
+    margin-top: 5px;
+}
+
+/* ------------------------- jquery.selectareas ----------------------------- */
+
+.select-areas-overlay {
+    background-color: #000;
+    overflow: hidden;
+    position: absolute;
+}
+
+.select-areas-outline {
+    background: #fff url('../img/outline.gif');
+    overflow: hidden;
+}
+
+.select-areas-resize-handler {
+    background-color: #000;
+    border: 1px #fff solid;
+    height: 8px;
+    width: 8px;
+    overflow: hidden;
+}
+
+.select-areas-delete-area {
+    background: url('../img/bt-delete.png');
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+}
+
+.delete-area {
+    position: absolute;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* -------------------------------- Image ----------------------------------- */
+
+.image-wrapper {
+    display: inline-block;
+    text-align: center;
+}
+
+.image-row {
+    text-align: center;
+}
+
+#image {
+    left: 0;
 }

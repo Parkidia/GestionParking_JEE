@@ -69,7 +69,7 @@ public class Place extends Localisation implements IPlace {
         this.nom = nom;
         this.handicapee = handicapee;
         this.orientation = orientation;
-        this.setParking((Parking) parking);
+        this.setParking(parking);
         this.statuts = new Vector<>();
     }
 
@@ -106,7 +106,7 @@ public class Place extends Localisation implements IPlace {
 
     @Override
     public void setParking(IParking parking) {
-        if (! parking.getPlaces().contains(this)) {
+        if (parking != null && ! parking.getPlaces().contains(this)) {
             parking.getPlaces().add(this);
         }
         this.parking = (Parking) parking;
@@ -145,5 +145,25 @@ public class Place extends Localisation implements IPlace {
     @Override
     public void setOrientation(int orientation) {
         this.orientation = orientation;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // Même instance.
+        if (obj == this) {
+            return true;
+        }
+
+        // Même type.
+        if (! (obj instanceof Place)) {
+            return false;
+        }
+
+        // Cast.
+        Place place = (Place) obj;
+
+        return nom.equals(place.getNom()) && getParking() != null
+               && place.getParking() != null
+               && getParking().getId() == place.getParking().getId();
     }
 }
