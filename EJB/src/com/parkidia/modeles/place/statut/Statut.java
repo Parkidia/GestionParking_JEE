@@ -101,5 +101,4 @@ public class Statut extends AbstractEntity implements IStatut {
     public void setCouleurVoiture(String couleur) {
         this.couleurVoiture = couleur;
     }
-
 }

@@ -35,9 +35,9 @@ function rgbToHex(color) {
 }
 
 // Contrôleur de la liste des parking.
-parkidiaApp.controller("ListeParkingsController", 
+parkidiaApp.controller("ListeParkingsController",
     function ($scope, $rootScope, parkingsFactory) {
-    
+
     // Chargement.
     $rootScope.chargementTerminee = false;
 
@@ -56,7 +56,7 @@ parkidiaApp.controller("ListeParkingsController",
         $scope.parkings = reponse.data;
 
     }, function err(reponse) {
-        
+
         // Chargement terminé.
         $rootScope.chargementTerminee = true;
 
@@ -68,9 +68,9 @@ parkidiaApp.controller("ListeParkingsController",
 });
 
 // Contrôleur de la création d'un parking.
-parkidiaApp.controller("CreerParkingController", 
+parkidiaApp.controller("CreerParkingController",
     function ($scope, $rootScope, $location, parkingsFactory) {
-    
+
     // Chargement.
     $rootScope.chargementTerminee = true;
 
@@ -84,7 +84,7 @@ parkidiaApp.controller("CreerParkingController",
 
         parkingsFactory.creerParking(this.nom, this.latitude, this.longitude)
         .then(function ok(reponse) {
-            
+
             // Enregistre le parking créé pour afficher la clé.
             $scope.parkingCree = reponse.data;
 
@@ -93,9 +93,9 @@ parkidiaApp.controller("CreerParkingController",
 
             // Upload l'image.
             parkingsFactory.uploadOverlayParking(
-                $scope.parkingCree.id, 
+                $scope.parkingCree.id,
                 $scope.parkingCree.cle, overlay).then(function ok(reponse) {
-                    
+
                     // Fin du chargement
                     $rootScope.chargementTerminee = true;
 
@@ -109,10 +109,10 @@ parkidiaApp.controller("CreerParkingController",
 
                     // Erreur.
                     $rootScope.erreur = true;
-                    $rootScope.titreErreur = "Impossible de charger " + 
+                    $rootScope.titreErreur = "Impossible de charger " +
                                              "l'image du parking"
                     $rootScope.messageErreur = "Veuillez réessayer de charger "
-                                               + "l'image en modifiant le parking";                         
+                                               + "l'image en modifiant le parking";
                 });
 
         }, function err(reponse) {
@@ -122,7 +122,7 @@ parkidiaApp.controller("CreerParkingController",
 
             // Erreur.
             $rootScope.erreur = true;
-            $rootScope.titreErreur = "Impossible de créer le parking \"" 
+            $rootScope.titreErreur = "Impossible de créer le parking \""
                                      + this.nom + "\"";
             $rootScope.messageErreur = "";
         });
@@ -133,7 +133,7 @@ parkidiaApp.controller("CreerParkingController",
 parkidiaApp.controller("DetailsParkingController",
     function ($scope, $rootScope, $routeParams, $location,
               parkingsFactory, placesFactory) {
-        
+
     // Chargement.
     $rootScope.chargementTerminee = false;
 
@@ -161,7 +161,7 @@ parkidiaApp.controller("DetailsParkingController",
             $scope.parking = reponse.data;
 
         }, function err(reponse) {
-            
+
             // Chargement terminé.
             $rootScope.chargementTerminee = true;
 
@@ -169,7 +169,7 @@ parkidiaApp.controller("DetailsParkingController",
             $rootScope.erreur = true;
 
             if (reponse.status == 510) {
-                $rootScope.titreErreur = "Le parking avec l'identifiant \"" 
+                $rootScope.titreErreur = "Le parking avec l'identifiant \""
                                          + $routeParams.id + "\" n'existe pas";
             } else {
                 $rootScope.titreErreur = "Impossible de charger le parking";
@@ -188,22 +188,22 @@ parkidiaApp.controller("DetailsParkingController",
 
     // Crééer une nouvelle place à ce parking.
     $scope.creerPlaceParking = function () {
-        
+
         // Chargement.
         $rootScope.chargementTerminee = false;
 
         // Créé la place.
-        placesFactory.creerPlace($routeParams.id, this.cleParking, 
-                                 this.nomPlace, this.handicapeePlace, 
-                                 this.latitudePlace, this.longitudePlace, 
+        placesFactory.creerPlace($routeParams.id, this.cleParking,
+                                 this.nomPlace, this.handicapeePlace,
+                                 this.latitudePlace, this.longitudePlace,
                                  this.orientationPlace).then(
             function ok(reponse) {
-                
+
                 // Place créée => update la vue.
                 init();
 
             }, function err(reponse) {
-                
+
                 // Erreur.
                 $rootScope.erreur = true;
                 $rootScope.titreErreur = "Impossible de créer cette place.";
@@ -211,8 +211,8 @@ parkidiaApp.controller("DetailsParkingController",
             });
 
         // Reset les champs
-        this.cleParking = this.nomPlace = this.handicapeePlace = 
-            this.latitudePlace = this.longitudePlace = this.orientationPlace 
+        this.cleParking = this.nomPlace = this.handicapeePlace =
+            this.latitudePlace = this.longitudePlace = this.orientationPlace
                 = null;
     };
 
@@ -221,12 +221,12 @@ parkidiaApp.controller("DetailsParkingController",
         parkingsFactory.supprimerParking($routeParams.id, this.cleParking).then(
 
             function ok(reponse) {
-                
+
                 // Parking supprimé => on revient à la liste.
                 $location.path("/");
 
             }, function err(reponse) {
-                
+
                 // Erreur.
                 $rootScope.erreur = true;
                 $rootScope.titreErreur = "Impossible de supprimer ce parking.";
@@ -242,7 +242,7 @@ parkidiaApp.controller("DetailsParkingController",
         parkingsFactory.modifierParking($routeParams.id, this.cleParking,
                                         this.nom, this.latitude, this.longitude)
         .then(function ok(reponse) {
-            
+
             // Enregistre le parking.
             $scope.parkingCree = reponse.data;
 
@@ -252,9 +252,9 @@ parkidiaApp.controller("DetailsParkingController",
 
                 // Upload l'image.
                 parkingsFactory.uploadOverlayParking(
-                    $scope.parkingCree.id, 
+                    $scope.parkingCree.id,
                     $scope.parkingCree.cle, overlay).then(function ok(reponse) {
-                        
+
                         // Fin du chargement
                         $rootScope.chargementTerminee = true;
 
@@ -269,13 +269,13 @@ parkidiaApp.controller("DetailsParkingController",
 
                         // Erreur.
                         $rootScope.erreur = true;
-                        $rootScope.titreErreur = "Impossible de charger " + 
+                        $rootScope.titreErreur = "Impossible de charger " +
                                                  "l'image du parking"
                         $rootScope.messageErreur = "Veuillez réessayer de charger "
-                                                   + "l'image en modifiant le parking";                         
+                                                   + "l'image en modifiant le parking";
                     });
                 } else {
-                    
+
                     // Refresh.
                     init();
                     $scope.parkingModifie = true;
@@ -288,7 +288,7 @@ parkidiaApp.controller("DetailsParkingController",
 
             // Erreur.
             $rootScope.erreur = true;
-            $rootScope.titreErreur = "Impossible de modifier le parking \"" 
+            $rootScope.titreErreur = "Impossible de modifier le parking \""
                                      + this.nom + "\"";
             $rootScope.messageErreur = "";
         });
@@ -300,17 +300,17 @@ parkidiaApp.controller("DetailsParkingController",
     // Modifie la place de parking courante.
     $scope.modifierPlaceParking = function () {
         // Modifie la place.
-        placesFactory.modifierPlace($routeParams.id, this.cleParking, 
-                                 $scope.placeCourante.nom, this.handicapeePlace, 
-                                 this.latitudePlace, this.longitudePlace, 
+        placesFactory.modifierPlace($routeParams.id, this.cleParking,
+                                 $scope.placeCourante.nom, this.handicapeePlace,
+                                 this.latitudePlace, this.longitudePlace,
                                  this.orientationPlace).then(
             function ok(reponse) {
-                
+
                 // Place modifiée => update la vue.
                 init();
 
             }, function err(reponse) {
-                
+
                 // Erreur.
                 $rootScope.erreur = true;
                 $rootScope.titreErreur = "Impossible de modifier cette place.";
@@ -318,23 +318,23 @@ parkidiaApp.controller("DetailsParkingController",
             });
 
         // Reset les champs
-        this.cleParking = this.handicapeePlace = 
-            this.latitudePlace = this.longitudePlace = this.orientationPlace 
+        this.cleParking = this.handicapeePlace =
+            this.latitudePlace = this.longitudePlace = this.orientationPlace
                 = null;
     };
 
     // Supprime la place de parking courante.
     $scope.supprimerPlaceParking = function () {
-        placesFactory.supprimerPlace($routeParams.id, this.cleParking, 
+        placesFactory.supprimerPlace($routeParams.id, this.cleParking,
                                      $scope.placeCourante.nom).then(
 
             function ok(reponse) {
-                
+
                 // Place supprimée => update la vue.
                 init();
 
             }, function err(reponse) {
-                
+
                 // Erreur.
                 $rootScope.erreur = true;
                 $rootScope.titreErreur = "Impossible de supprimer cette place.";
@@ -350,18 +350,18 @@ parkidiaApp.controller("DetailsParkingController",
 
         placesFactory.modifierStatut($routeParams.id, this.cleParking,
                                      $scope.placeCourante.nom, !this.dispoPlace,
-                                     this.dispoPlace ? 
+                                     this.dispoPlace ?
                                         hexToRGB(this.couleurVoiture) : null).then(
             function ok(reponse) {
-                
+
                 // Place modifiée => update la vue.
                 init();
 
             }, function err() {
-                
+
                 // Erreur.
                 $rootScope.erreur = true;
-                $rootScope.titreErreur = "Impossible de modifier le statut de" 
+                $rootScope.titreErreur = "Impossible de modifier le statut de"
                                          + " cette place.";
                 $rootScope.messageErreur = reponse.status;
             });
@@ -372,9 +372,79 @@ parkidiaApp.controller("DetailsParkingController",
 });
 
 // Le contrôleur de la création du JSON.
-parkidiaApp.controller("CreerJsonController", 
+parkidiaApp.controller("CreerJsonController",
     function ($scope, $rootScope, $routeParams, parkingsFactory) {
-    
+
+    // Les découpages saisies.
+    $scope.decoup = [];
+    $scope.places = [];
+
+    // Formulaire valide.
+    $scope.valide = false;
+
+    // Importe une image pour créer les places.
+    $scope.importerImage = function () {
+
+        // Reset les sélections.
+        $("#image").selectAreas("reset");
+        $("#image").selectAreas("destroy");
+
+        // Lis l'image.
+        var preview = $('#image')[0];
+        var file = $("#imageImport")[0].files[0];
+        var reader= new FileReader();
+
+        reader.addEventListener("load", function () {
+            preview.src = reader.result;
+
+            // Initialise le module pour faire des sélections.
+            $(document).ready(function () {
+                $('#image').selectAreas({
+                    allowEdit: true,
+                    allowMove: true,
+                    allowResize: true,
+                    allowSelect: true,
+                    allowDelete: true,
+                    allowNudge: true,
+                    aspectRatio: 0,
+                    width: 674,
+                    height: 555,
+                    minSize: [1, 1],
+                    maxAreas: $scope.parking.places.length,
+                    outlineOpacity: 1,
+                    overlayOpacity: 0,
+                    onChanging: null,
+                    onChanged: function () {
+                        // Enregistre les coordonnées.
+                        $scope.decoup = $('#image').selectAreas("areas");
+
+                        // Si le nombre de zones renseignées est bon.
+                        $scope.valide = $scope.decoup.length
+                            == $scope.parking.places.length;
+
+                        // Force la MAJ du scope.
+                        $scope.$apply();
+                    }
+                });
+            });
+
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // Rend disponible la fonction dans le scope.
+    $scope.enHex = function (color) {
+        return rgbToHex(color);
+    };
+
+    // Arrondi une valeur à l'entier.
+    $scope.round = function (nombre) {
+        return Math.round(nombre);
+    };
+
     // Récupère les parkings.
     parkingsFactory.getParking($routeParams.id).then(function ok(reponse) {
 
@@ -385,51 +455,8 @@ parkidiaApp.controller("CreerJsonController",
         $scope.nom = reponse.data.nom;
         $scope.parking = reponse.data;
 
-        // Les découpages saisies.
-        $scope.decoup = [];
-        $scope.places = [];
-
-        // Formulaire valide.
-        $scope.valide = false;
-
-        // Rend disponible la fonction dans le scope.
-        $scope.enHex = function (color) {
-            return rgbToHex(color);
-        }
-
-        // Initialise le module pour faire des sélections.
-        $(document).ready(function () {
-            $('#image').selectAreas({
-                allowEdit: true,
-                allowMove: true,
-                allowResize: true,
-                allowSelect: true,
-                allowDelete: true,
-                allowNudge: true,
-                aspectRatio: 0,
-                minSize: [1, 1],
-                width: 0,
-                maxAreas: $scope.parking.places.length,
-                outlineOpacity: 1,
-                overlayOpacity: 0,
-                areas: [],
-                onChanging: null,
-                onChanged: function () {
-                    // Enregistre les coordonnées.
-                    $scope.decoup = $('#image').selectAreas("relativeAreas");
-
-                    // Si le nombre de zones renseignées est bon.
-                    $scope.valide = $scope.decoup.length 
-                                        == $scope.parking.places.length;
-
-                    // Force la MAJ du scope.
-                    $scope.$apply();
-                }
-            });
-        });
-
     }, function err(reponse) {
-        
+
         // Chargement terminé.
         $rootScope.chargementTerminee = true;
 
@@ -437,7 +464,7 @@ parkidiaApp.controller("CreerJsonController",
         $rootScope.erreur = true;
 
         if (reponse.status == 510) {
-            $rootScope.titreErreur = "Le parking avec l'identifiant \"" 
+            $rootScope.titreErreur = "Le parking avec l'identifiant \""
                                      + $routeParams.id + "\" n'existe pas";
         } else {
             $rootScope.titreErreur = "Impossible de charger le parking";
@@ -454,10 +481,10 @@ parkidiaApp.controller("CreerJsonController",
         for (var i = 0 ; i < $scope.parking.places.length ; i++) {
             json.push({
                 nom: $scope.parking.places[i].nom,
-                minX: $scope.decoup[i].x,
-                minY: $scope.decoup[i].y,
-                maxX: $scope.decoup[i].width + $scope.decoup[i].x,
-                maxY: $scope.decoup[i].height + $scope.decoup[i].y,
+                minX: Math.round($scope.decoup[i].x),
+                minY: Math.round($scope.decoup[i].y),
+                maxX: Math.round($scope.decoup[i].x + $scope.decoup[i].width),
+                maxY: Math.round($scope.decoup[i].y + $scope.decoup[i].height),
                 dispo: $scope.parking.places[i].dernierStatut.disponible,
                 couleurVoiture: $scope.parking.places[i].dernierStatut.couleurVoiture
             });

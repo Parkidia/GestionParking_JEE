@@ -6,9 +6,28 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col s12 m6 push-m3 l4 push-l4">
+            <form name="importerImgForm" data-ng-submit="importerImage()">
+                <div class="row">
+                    <div class="col s10">
+                        <div class="file-field input-field">
+                            <input type="file" id="imageImport">
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Image du parking" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s2">
+                        <button type="submit" class="btn green" data-ng-disabled="importerImgForm.$invalid || importerImgForm.$pending">OK</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="row image-row">
         <div class="image-wrapper">
-            <img id="image" src="http://localhost:8080/GestionParking_war_exploded/rest/parking/overlay/{{parking.id}}" alt="Overlay du parking">
+            <img id="image" src="img/not-found.jpg" alt="Overlay du parking">
         </div>
     </div>
     <div class="row">
@@ -34,25 +53,25 @@
                 </div>
                 <div class="col s6 m6 l1">
                     <div class="input-field">
-                        <input type="number" step="1" ng-value="decoup[$index].x" placeholder="" readonly>
+                        <input type="number" step="1" ng-value="round(decoup[$index].x)" placeholder="" readonly>
                         <label class="active">Min X</label>
                     </div>
                 </div>
                 <div class="col s6 m6 l1">
                     <div class="input-field">
-                        <input type="number" step="1" ng-value="decoup[$index].y" placeholder="" readonly>
+                        <input type="number" step="1" ng-value="round(decoup[$index].y)" placeholder="" readonly>
                         <label class="active">Min Y</label>
                     </div>
                 </div>
                 <div class="col s6 m6 l1">
                     <div class="input-field">
-                        <input type="number" step="1" ng-value="decoup[$index].x + decoup[$index].width" placeholder="" readonly>
+                        <input type="number" step="1" ng-value="round(decoup[$index].x + decoup[$index].width)" placeholder="" readonly>
                         <label class="active">Max X</label>
                     </div>
                 </div>
                 <div class="col s6 m6 l1">
                     <div class="input-field">
-                        <input type="number" step="1" ng-value="decoup[$index].y + decoup[$index].height" placeholder="" readonly>
+                        <input type="number" step="1" ng-value="round(decoup[$index].y + decoup[$index].height)" placeholder="" readonly>
                         <label class="active">Max Y</label>
                     </div>
                 </div>
