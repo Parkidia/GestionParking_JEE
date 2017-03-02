@@ -193,24 +193,8 @@ public class ParkingWebService {
                            .build();
         }
 
-        // Supprime les images.
+        // Supprime l'images.
         // On ne sait pas le format.
-        File imgOverlay =
-                new File(
-                        WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + id + ".jpg");
-        try {
-            imgOverlay.delete();
-        } catch (Exception e) {
-        }
-
-        imgOverlay =
-                new File(
-                        WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + id + ".png");
-        try {
-            imgOverlay.delete();
-        } catch (Exception e) {
-        }
-
         File imgParking =
                 new File(WebServiceParkidia.DOSSIER_IMAGE + id + ".jpg");
         try {
@@ -227,48 +211,6 @@ public class ParkingWebService {
 
         parkingService.supprimerParking(parking);
         return Response.ok().build();
-    }
-
-    /**
-     * Retourne l'image d'overlay d'un parking.
-     * @param idParking l'identifiant du parking.
-     * @return une réponse HTTP: <ul>
-     *     <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT}
-     * : si le parking n'existe pas.</li>
-     * <li>{@link WebServiceParkidia#HTTP_ERR_CHARGEMENT_IMAGE}:
-     * si l'image n'existe pas.</li> <li>200 avec l'image si tout c'est bien
-     * passé.</li> </ul>
-     */
-    @GET
-    @Path("/overlay/{idParking}")
-    @Produces("image/png")
-    public Response getOverlayParking(@PathParam("idParking") int idParking) {
-        // Récupère le parking.
-        IParking parking = parkingService.getParking(idParking);
-
-        // S'il n'existe pas.
-        if (parking == null) {
-            return Response
-                    .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .entity("Le parking avec l'identifiant \"" +
-                            idParking + "\" n'existe pas.").build();
-        } else {
-
-            // Le chemin de l'image.
-            String chemin =
-                    WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + idParking +
-                    ".png";
-            File fichier = new File(chemin);
-
-            if (fichier.exists()) {
-                return Response.ok(new File(chemin)).build();
-            } else {
-                return Response
-                        .status(WebServiceParkidia.HTTP_ERR_CHARGEMENT_IMAGE)
-                        .build();
-            }
-        }
     }
 
     /**
@@ -310,70 +252,6 @@ public class ParkingWebService {
                         .status(WebServiceParkidia.HTTP_ERR_CHARGEMENT_IMAGE)
                         .build();
             }
-        }
-    }
-
-    /**
-     * Charge une image d'overlay sur le serveur correspondant à un parking.
-     * @param idParking l'identifiant du parking dont l'image représente.
-     * @param cle le clé permettant de modifier des informations du parking.
-     * @param in le flux permettant de lire l'image.
-     * @param desc une description du fichier de l'image.
-     * @return Une réponse HTTP : <ul>
-     *     <li>{@link WebServiceParkidia#HTTP_ERR_UPLOAD_IMAGE}
-     * : si un problème est survenu lors du chargement de l'image.</li>
-     * <li>{@link WebServiceParkidia#HTTP_ERR_PARKING_INEXISTANT} : Si le
-     * parking n'existe pas.</li>
-     * <li>{@link WebServiceParkidia#HTTP_ERR_CLE_INVALIDE}
-     * : Si la clé donnée n'est pas la bonne.</li> <li>200 si le chargement a
-     * été réalisé avec succès.</li> </ul>
-     */
-    @POST
-    @Path("/overlay/{idParking}/{cle}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response ajouterOverlay(@PathParam("idParking") int idParking,
-                                   @PathParam("cle") String cle,
-                                   @FormDataParam("overlay") InputStream in,
-                                   @FormDataParam("overlay")
-                                           FormDataContentDisposition desc) {
-
-        // Récupère le parking.
-        IParking parking = parkingService.getParking(idParking);
-
-        // S'il n'existe pas.
-        if (parking == null) {
-            return Response
-                    .status(WebServiceParkidia.HTTP_ERR_PARKING_INEXISTANT)
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .entity("Le parking avec l'identifiant \"" +
-                            idParking + "\" n'existe pas.").build();
-        } else {
-
-            // Bonne clé.
-            if (! cle.equals(parking.getCle())) {
-                return Response.status(WebServiceParkidia.HTTP_ERR_CLE_INVALIDE)
-                               .type(MediaType.TEXT_PLAIN_TYPE)
-                               .entity("Vous n'avez pas le droit " +
-                                       "d'enregistrer un" +
-                                       " statut pour cette place : clé " +
-                                       "incorrecte.")
-                               .build();
-            }
-
-            // Le chemin où le fichier sera upload.
-            String cheminUpload =
-                    WebServiceParkidia.DOSSIER_IMAGE_OVERLAY + idParking +
-                    ".png";
-
-            // Enregistre l'image.
-            try {
-                enregistrerFichier(in, cheminUpload);
-            } catch (IOException e) {
-                return Response.status(WebServiceParkidia.HTTP_ERR_UPLOAD_IMAGE)
-                               .build();
-            }
-
-            return Response.ok().build();
         }
     }
 

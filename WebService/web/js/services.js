@@ -57,28 +57,6 @@ parkidiaApp.factory("parkingsFactory", function ($http) {
          */
         supprimerParking: function (id, cle) {
             return $http.delete(ROOT_URL_REST + "parking/" + id + "/" + cle);
-        },
-
-        /**
-         * Upload l'overlay d'un parking.
-         * @param idParking l'identifiant du parking.
-         * @param cle la clé pour modifier le parking.
-         * @param overlay l'overlay à upload.
-         * @return une promesse.
-         */
-        uploadOverlayParking: function (idParking, cle, overlay) {
-            // Créé les données du formulaire.
-            var data = new FormData();
-            data.append("overlay", overlay);
-
-            return $http.post(
-                ROOT_URL_REST + "parking/overlay/" + idParking + "/" + cle, 
-                data, {
-                    transformRequest: angular.identity,
-                    headers: {
-                        'Content-Type': undefined
-                    }
-            });
         }
     };
 });

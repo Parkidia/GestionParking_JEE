@@ -20,12 +20,6 @@ public class WebServiceParkidia extends ResourceConfig {
     public static final String RACINE = "/rest/";
 
     /**
-     * Le chemin absolu du dossier où sont chargées les images d'overlay des
-     * parkings.
-     */
-    public static final String DOSSIER_IMAGE_OVERLAY = "E:\\Overlay\\";
-
-    /**
      * Le chemin absolu du dossier où sont chargées les images des parkings.
      */
     public static final String DOSSIER_IMAGE = "E:\\Parking\\";

@@ -88,32 +88,11 @@ parkidiaApp.controller("CreerParkingController",
             // Enregistre le parking créé pour afficher la clé.
             $scope.parkingCree = reponse.data;
 
-            // Récupère l'overlay.
-            var overlay = $("#overlay")[0].files[0];
+            // Montre le résultat de la création.
+            $scope.parkingOk = true;
 
-            // Upload l'image.
-            parkingsFactory.uploadOverlayParking(
-                $scope.parkingCree.id,
-                $scope.parkingCree.cle, overlay).then(function ok(reponse) {
-
-                    // Fin du chargement
-                    $rootScope.chargementTerminee = true;
-
-                    // Montre le résultat de la création.
-                    $scope.parkingOk = true;
-
-                }, function err(reponse) {
-
-                    // Chargement terminé.
-                    $rootScope.chargementTerminee = true;
-
-                    // Erreur.
-                    $rootScope.erreur = true;
-                    $rootScope.titreErreur = "Impossible de charger " +
-                                             "l'image du parking"
-                    $rootScope.messageErreur = "Veuillez réessayer de charger "
-                                               + "l'image en modifiant le parking";
-                });
+            // Chargement terminé.
+            $rootScope.chargementTerminee = true;
 
         }, function err(reponse) {
 
@@ -146,7 +125,7 @@ parkidiaApp.controller("DetailsParkingController",
     // Rend disponible la fonction dans le scope.
     $scope.enHex = function (color) {
         return rgbToHex(color);
-    }
+    };
 
     /** Initialise le parking et ses places. */
     function init() {
@@ -394,8 +373,29 @@ parkidiaApp.controller("CreerJsonController",
         var file = $("#imageImport")[0].files[0];
         var reader= new FileReader();
 
+        // Lis le fichier JSON s'il y en a un.
+        var fichierJSON = $("#fichierJSON")[0].files[0];
+        var readerJSON = new FileReader();
+
+        readerJSON.addEventListener("load", function () {
+            $scope.places = JSON.parse(readerJSON.result);
+            $scope.$apply();
+        }, false);
+
         reader.addEventListener("load", function () {
             preview.src = reader.result;
+
+            // Transforme les places pour les ajouter comme area.
+            var areas = [];
+
+            $scope.places.forEach(function (place) {
+                areas.push({
+                    x: place.minX,
+                    y: place.minY,
+                    width: place.maxX - place.minX,
+                    height: place.maxY - place.minY,
+                });
+            });
 
             // Initialise le module pour faire des sélections.
             $(document).ready(function () {
@@ -410,6 +410,7 @@ parkidiaApp.controller("CreerJsonController",
                     width: 674,
                     height: 555,
                     minSize: [1, 1],
+                    areas: areas,
                     maxAreas: $scope.parking.places.length,
                     outlineOpacity: 1,
                     overlayOpacity: 0,
@@ -432,6 +433,11 @@ parkidiaApp.controller("CreerJsonController",
 
         if (file) {
             reader.readAsDataURL(file);
+        }
+
+        if (fichierJSON) {
+            readerJSON.readAsText(fichierJSON, "UTF-8");
+            $scope.valide = true;
         }
     };
 
